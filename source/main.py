@@ -12,6 +12,8 @@ def create_plot(y, x, y_data, x_data, num_plot=1):
     plt.autoscale()
 
 
+#teste 
+
 if __name__ == "__main__":
     data = pd.read_excel('data/CarDataSet.xlsx') # Read the Excel file
     matrix = data.values.tolist() # Convert the DataFrame to a matrix
