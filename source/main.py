@@ -19,24 +19,11 @@ def main():
     # Create plot window, give it a title and configure grid layout
     plt.figure(layout="tight", num="relação entre MPG e as diferentes variáveis (características do carro)", figsize=(15,10))
     
-    # MPG vs. Acceleration Plot
-    create_plot(var_names[6], var_names[0], data[var_names[6]], data[var_names[0]])
     
-    # MPG vs. Cylinders Plot
-    create_plot(var_names[6], var_names[1], data[var_names[6]], data[var_names[1]], 2)
+    for i in range(6):
+        create_plot(var_names[6], var_names[i], data[var_names[6]], data[var_names[i]], i + 1)
     
-    # MPG vs. Displacement Plot
-    create_plot(var_names[6], var_names[2], data[var_names[6]], data[var_names[2]], 3)
-
-    # MPG vs. Horsepower Plot
-    create_plot(var_names[6], var_names[3], data[var_names[6]], data[var_names[3]], 4)
-
-    # MPG vs. Model Year Plot
-    create_plot(var_names[6], 'Model Year', data[var_names[6]], data[var_names[4]], 5)
-
-    # MPG vs. Weight Plot
-    create_plot(var_names[6], var_names[5], data[var_names[6]], data[var_names[5]], 6)
-
+    
     # Convert all the data in data (type: DataFrame) to uint16 then extracts column values to a nparray to then convert it to a matrix as I've done to matrix
     matrix_uint16 = (data.astype(np.uint16)).values
     print(matrix_uint16)
