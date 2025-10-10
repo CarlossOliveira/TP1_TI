@@ -26,14 +26,20 @@ def main():
     # Convert all the data in matrix to uint16
     matrix_uint16 = matrix.astype(np.uint16)
     
-    # Create an alphabet for matrix_uint16 and sort it
+    # Create an alphabet for matrix_uint16
     alphabet = np.array([], dtype=np.uint16)
     alphabet = np.unique(matrix_uint16)
-    alphabet = np.sort(alphabet)
     
-    # Calculate the number of occurrences of each element of the alphabet in each variable of matrix_uint16s
+    # Calculate the number of occurrences of each element of the alphabet in each variable (column) [ERRO]
+    total_occurrences = np.zeros((len(alphabet), matrix_uint16.shape[1]), dtype=np.uint16)
+    for num in alphabet:
+        occurrences=0
+        arr=np.where(matrix_uint16[:, None] == num, occurrences + 1, occurrences)
+        total_occurrences += arr.astype(np.uint16)
+    print("Alphabet:\n", alphabet)
+    print("Total occurrences of each element of the alphabet in each variable (column):\n", total_occurrences)
     
-    #plt.show()
+    plt.show()
 
 
 if __name__ == "__main__":
