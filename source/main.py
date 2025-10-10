@@ -33,6 +33,7 @@ def main():
     
     # Calculate the number of occurrences of each element of the alphabet in each variable of matrix_uint16s
     
+    
     #plt.show()
 
 
