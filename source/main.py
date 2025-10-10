@@ -42,7 +42,6 @@ def main():
     
     plt.show()
 
-# THIS IS A TEST TO CHECK IF THE BRANCH MASTER IS WORKING PROPERLY
 
 if __name__ == "__main__":
     main()
