@@ -11,10 +11,7 @@ def create_plot(y, x, y_data, x_data, num_plot=1):
     plt.title(f'{y} vs. {x}')
     plt.autoscale()
 
-# pp
-#teste 
-
-if __name__ == "__main__":
+def main():
     data = pd.read_excel('data/CarDataSet.xlsx') # Read the Excel file
     matrix = data.values.tolist() # Convert the DataFrame to a matrix
     parameters = data.columns.values.tolist() # Get the column names
@@ -55,3 +52,7 @@ if __name__ == "__main__":
     # Calculate the number of occurrences of each element of the alphabet in each variable of matrix_uint16s
     
     plt.show()
+
+
+if __name__ == "__main__":
+    main()
