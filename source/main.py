@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 
 
 def create_plot(y, x, y_data, x_data, num_plot=1):
-    plt.subplot(2,3,num_plot)
-    plt.scatter(x_data,y_data,color="darkmagenta")
+    plt.subplot(3,2,num_plot)
+    plt.scatter(x_data,y_data,color="m")
     plt.xlabel(x)
     plt.ylabel(y)
     plt.title(f'{y} vs. {x}')
@@ -14,41 +14,44 @@ def create_plot(y, x, y_data, x_data, num_plot=1):
 def main():
     data = pd.read_excel('data/CarDataSet.xlsx') # Read the Excel file
     matrix = data.values.tolist() # Convert the DataFrame to a matrix
-    parameters = data.columns.values.tolist() # Get the column names
-    
+    var_names = data.columns.values.tolist() # Get the column names
+
     # Create plot window, give it a title and configure grid layout
     plt.figure(layout="tight", num="relação entre MPG e as diferentes variáveis (características do carro)", figsize=(15,10))
     
     # MPG vs. Acceleration Plot
-    create_plot('MPG', 'Acceleration', data['MPG'], data['Acceleration'], 1)
+    create_plot(var_names[6], var_names[0], data[var_names[6]], data[var_names[0]])
     
     # MPG vs. Cylinders Plot
-    create_plot('MPG', 'Cylinders', data['MPG'], data['Cylinders'], 2)
+    create_plot(var_names[6], var_names[1], data[var_names[6]], data[var_names[1]], 2)
     
     # MPG vs. Displacement Plot
-    create_plot('MPG', 'Displacement', data['MPG'], data['Displacement'], 3)
-    
+    create_plot(var_names[6], var_names[2], data[var_names[6]], data[var_names[2]], 3)
+
     # MPG vs. Horsepower Plot
-    create_plot('MPG', 'Horsepower', data['MPG'], data['Horsepower'], 4)
+    create_plot(var_names[6], var_names[3], data[var_names[6]], data[var_names[3]], 4)
 
     # MPG vs. Model Year Plot
-    create_plot('MPG', 'Model Year', data['MPG'], data['ModelYear'], 5)
+    create_plot(var_names[6], 'Model Year', data[var_names[6]], data[var_names[4]], 5)
 
     # MPG vs. Weight Plot
-    create_plot('MPG', 'Weight', data['MPG'], data['Weight'], 6)
+    create_plot(var_names[6], var_names[5], data[var_names[6]], data[var_names[5]], 6)
 
     # Convert all the data in data (type: DataFrame) to uint16 then extracts column values to a nparray to then convert it to a matrix as I've done to matrix
     matrix_uint16 = (data.astype(np.uint16)).values
     print(matrix_uint16)
-    
     # Create an alphabet for matrix_uint16 and sort it
     alphabet = []
     for line in matrix_uint16:
         for col in range(len(line)):
             if (line[col] not in alphabet):
                 alphabet.append(line[col])
-    alphabet.sort()
 
+    
+    # if (matrix_uint16[:][:] not in alphabet):
+    #     alphabet.append(matrix_uint16[:][:])
+    alphabet.sort()
+    print(alphabet)
     # Calculate the number of occurrences of each element of the alphabet in each variable of matrix_uint16s
     
     plt.show()
