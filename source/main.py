@@ -46,12 +46,12 @@ def main():
         for col in range(len(line)):
             if (line[col] not in alphabet):
                 alphabet.append(line[col])
-
+    print("-----------------\n", alphabet)
     
     # if (matrix_uint16[:][:] not in alphabet):
     #     alphabet.append(matrix_uint16[:][:])
     alphabet.sort()
-    print(alphabet)
+    print("-----------------\n", alphabet)
     # Calculate the number of occurrences of each element of the alphabet in each variable of matrix_uint16s
     
     plt.show()
