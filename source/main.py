@@ -41,7 +41,6 @@ def main():
     print(f"[{t.strftime('%Y-%m-%d %H:%M:%S')}] Data converted to uint16 successfully.")
     
     # Create an alphabet for matrix_uint16
-    alphabet = np.array([], dtype=np.uint16)
     alphabet = np.unique(matrix_uint16)
     print(f"[{t.strftime('%Y-%m-%d %H:%M:%S')}] Alphabet created successfully.")
     
