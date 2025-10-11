@@ -24,11 +24,19 @@ def main():
         create_plot(var_names[6], var_names[i], data[var_names[6]], data[var_names[i]], i + 1)
     
     # Convert all the data in matrix to uint16
-    matrix_uint16 = matrix.astype(np.uint16)
+    matrix_uint16 = matrix.astype(np.uint16) # A matrix é uma lista. Não sei como esta funcionando o astype mas a mim dava uma mensagem do tipo \\\ERRO: 'list' object has no attribute 'astype'///
     
     # Create an alphabet for matrix_uint16
     alphabet = np.array([], dtype=np.uint16)
     alphabet = np.unique(matrix_uint16)
+    
+    
+    #Versao Bernardo
+    
+    matrix_uint16 = np.array(matrix)
+    matrix_uint16 = matrix_uint16.astype(np.uint16)
+    alphabet = np.unique(matrix_uint16)
+    
     
     # Calculate the number of occurrences of each element of the alphabet in each variable (column)
     total_occurrences = np.zeros((len(var_names), len(alphabet)), dtype=np.uint16) # Creates a 2 axis array (matrix) filled with 0s with the number of rows equal to the number of variables (columns in the original matrix) and the number of columns equal to the number of unique elements in the alphabet. This matrix will be used to store the count of occurrences of each element of the alphabet in each variable (column).
