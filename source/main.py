@@ -14,11 +14,39 @@ def create_plot(y, x, y_data, x_data, num_plot=1):
 def create_bar_graph(x, x_data, y_data):
     plt.figure(layout="tight", num=f'Número de ocorrências representado em gráfico de barras - {x}')
     positions = np.arange(len(x_data)) # Create an array with positions for each bar
-    plt.bar(positions, y_data, color='red', align='center') # Create the bar graph
-    plt.xticks(positions, x_data, fontsize=6) 
+    plt.bar(positions, y_data, color='red', align='center') # Create the bar graph with bars centered at the positions
+    plt.xticks(positions, x_data, fontsize=6) # Set x-ticks to the positions with corresponding labels from x_data
     plt.xlabel(x)
     plt.ylabel("Count")
 
+def binning_to_var(data, var, bin_size):
+    matrix_uint16 = data.values.astype(np.uint16)
+    alphabet = np.unique(matrix_uint16)
+    
+    new_bin = np.zeros(len(alphabet), dtype=np.uint16)
+
+    for i in range(0, len(alphabet), bin_size): 
+        bin = alphabet[i:i + bin_size]
+        bin_mode = np.bincount(bin).argmax()
+        new_bin[i:i + bin_size] = bin_mode
+
+    print(new_bin)
+    
+    var_index = data.columns.get_loc(var) # Get the index of the variable (column) in the DataFrame
+    var_data = matrix_uint16[:, var_index] # Get the data of the variable (column) from the matrix
+    print("-----------------")
+    print(var_data)
+    print("-----------------")
+    print(alphabet)
+    binned_var_data = np.zeros(len(var_data), dtype=np.uint16) # Create an array to store the binned data
+
+    # Map each value in var_data to its corresponding binned value using the new_bin array
+    for i in range(len(var_data)):
+        symbol_index = np.where(alphabet == var_data[i])[0][0] # Find the index of the symbol in the alphabet
+        binned_var_data[i] = new_bin[symbol_index] # Map the symbol to its binned value
+
+    create_bar_graph(f'Binned {var}', np.unique(binned_var_data), np.bincount(binned_var_data)[np.unique(binned_var_data)])
+    
 def main():
     data = pd.read_excel('data/CarDataSet.xlsx') # Read the Excel file
     matrix = data.values # Convert the DataFrame to a matrix
@@ -44,10 +72,16 @@ def main():
             occurrences = matrix_uint16[:, col] == alphabet[symbol] # Creates a boolean array where the symbol is found in the column. Example case: We are searching for the number of occurences of the symbol 5 in column 0 (column 0 = [5,2,5,6,0,89,5]). The occurrences array will be [True, False, True, False, False, False, True] where True indicates the presence of the symbol.
             total_occurrences[col, symbol] = np.sum(occurrences) # Sum the boolean array to get the number of occurrences of the symbol. NOTE: It's important to remember that in Python, True is equivalent to 1 and False is equivalent to 0. So, summing the boolean array gives the count of True values, which corresponds to the number of occurrences of the symbol in the column.
 
-    # Create bar graphs for each variable
+    # Create bar graphs for each variable (column) showing the number of occurrences of each element of the alphabet
     for var in range(len(var_names)):
-        indice_nonzero = total_occurrences[var].nonzero()[0] 
+        indice_nonzero = total_occurrences[var].nonzero()[0] # Get the indices of non-zero occurrences to avoid plotting bars for elements that do not exist in the variable
         create_bar_graph(var_names[var], alphabet[indice_nonzero], total_occurrences[var][indice_nonzero])
+
+    # Apply binning to some variables
+    binning_to_var(data, 'Displacement', 5)
+    binning_to_var(data, 'Horsepower', 5)
+    binning_to_var(data, 'Weight', 40)
+
     plt.show()
 
 if __name__ == "__main__":
