@@ -27,7 +27,6 @@ def main():
     matrix_uint16 = matrix.astype(np.uint16)
     
     # Create an alphabet for matrix_uint16
-    alphabet = np.array([], dtype=np.uint16)
     alphabet = np.unique(matrix_uint16)
     
     # Calculate the number of occurrences of each element of the alphabet in each variable (column)
@@ -41,7 +40,6 @@ def main():
     print("Total occurrences of each element of the alphabet in each variable (column):\n", total_occurrences.tolist())
     
     plt.show()
-
 
 if __name__ == "__main__":
     main()
