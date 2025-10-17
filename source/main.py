@@ -25,18 +25,59 @@ def create_plot_bar(alphabet, numberOccurrences, var_names):
     
 def binning(list_num, alphabet, numberOccurrences, step, index):
     min_interval = np.min(list_num)
+    limite = np.max(list_num)
     max_interval = min_interval + step
-    
-    max_occurrences = np.max(numberOccurrences[index])
-    index_max_occurrences = np.where(numberOccurrences[index] == max_occurrences)[0][0]
-    replacement_value = alphabet[index][index_max_occurrences]
 
-    for i in range(len(list_num)):
-        list_binning = np.where((list_num >= min_interval) & (list_num <= max_interval), list_num, replacement_value)
-        min_interval = max_interval + 1 
+    print(alphabet)
+    print(numberOccurrences)
+    print(list_num)
+    # Initial filtering
+    mask_alphabet = (alphabet[index] >= min_interval) & (alphabet[index] <= max_interval)
+    alphabet_filtrado = alphabet[index][mask_alphabet]
+    ocorrencias_filtradas = numberOccurrences[index][mask_alphabet]
+
+    if len(ocorrencias_filtradas) == 0:
+        # Fallback if empty, e.g., use some default or min of alphabet
+        replacement_value = np.min(alphabet[index])  # or any default you want
+    else:
+        idx_max = np.argmax(ocorrencias_filtradas)
+        replacement_value = alphabet_filtrado[idx_max]
+
+    while min_interval <= limite:
+        if limite <= max_interval + step:
+            list_binning = np.where((list_num >= min_interval) & (list_num <= limite), list_num, replacement_value)
+            min_interval = max_interval + 1
+
+            mask_alphabet = (alphabet[index] >= min_interval) & (alphabet[index] <= limite)
+            alphabet_filtrado = alphabet[index][mask_alphabet]
+            ocorrencias_filtradas = numberOccurrences[index][mask_alphabet]
+
+            if len(ocorrencias_filtradas) == 0:
+                replacement_value = np.min(alphabet[index])  # fallback
+            else:
+                idx_max = np.argmax(ocorrencias_filtradas)
+                replacement_value = alphabet_filtrado[idx_max]
+        else:
+            list_binning = np.where((list_num >= min_interval) & (list_num <= max_interval), list_num, replacement_value)
+            min_interval = max_interval + 1
+            max_interval = min_interval + step
+
+            mask_alphabet = (alphabet[index] >= min_interval) & (alphabet[index] <= max_interval)
+            alphabet_filtrado = alphabet[index][mask_alphabet]
+            ocorrencias_filtradas = numberOccurrences[index][mask_alphabet]
+
+            if len(ocorrencias_filtradas) == 0:
+                replacement_value = np.min(alphabet[index])  # fallback
+            else:
+                idx_max = np.argmax(ocorrencias_filtradas)
+                replacement_value = alphabet_filtrado[idx_max]
+        min_interval = max_interval + 1
         max_interval = min_interval + step
+                
+        
 
     print(list_binning)
+
     
 def main():
     data = pd.read_excel('data/CarDataSet.xlsx') # Read the Excel file
@@ -83,8 +124,7 @@ def main():
     
     colunasVariveis = ['Displacement', 'Horsepower', 'Weight']
     steps = [5, 5, 50] 
-    var_names_arr = np.array(var_names)
-
+    var_names_arr = np.array(var_names) #where so trabalha com arr
 
     for i in range(len(colunasVariveis)):
         var = colunasVariveis[i]
