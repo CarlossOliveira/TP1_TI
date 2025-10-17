@@ -21,8 +21,22 @@ def create_plot_bar(alphabet, numberOccurrences, var_names):
     plt.ylabel("Count")
     plt.tight_layout()
     plt.autoscale()
-    plt.show()
+    #plt.show()
+    
+def binning(list_num, alphabet, numberOccurrences, step, index):
+    min_interval = np.min(list_num)
+    max_interval = min_interval + step
+    
+    max_occurrences = np.max(numberOccurrences[index])
+    index_max_occurrences = np.where(numberOccurrences[index] == max_occurrences)[0][0]
+    replacement_value = alphabet[index][index_max_occurrences]
 
+    for i in range(len(list_num)):
+        list_binning = np.where((list_num >= min_interval) & (list_num <= max_interval), list_num, replacement_value)
+        min_interval = max_interval + 1 
+        max_interval = min_interval + step
+
+    print(list_binning)
     
 def main():
     data = pd.read_excel('data/CarDataSet.xlsx') # Read the Excel file
@@ -67,9 +81,22 @@ def main():
 
     #6 
     
-    # np.where(minimo intrevalo e max intrevalo, TRUE acontecimento, False acontecimento) depois devol usar no exercicio 6
+    colunasVariveis = ['Displacement', 'Horsepower', 'Weight']
+    steps = [5, 5, 50] 
+    var_names_arr = np.array(var_names)
 
 
-
+    for i in range(len(colunasVariveis)):
+        var = colunasVariveis[i]
+        step = steps[i]
+                
+        index = np.where(var_names_arr == var)[0][0] #np.where(var_names_arr == var)[0] → retorna: array([3]) 
+                                                     #np.where(var_names_arr == var)[0][0] → retorna: 3
+        # Extrair a coluna de dados como uint16
+        list_num = matrix[:, index].astype(np.uint16)
+        
+        binning(list_num, alphabet, numberOccurrences, step, index)
+                
+    
 if __name__ == "__main__":
     main()
