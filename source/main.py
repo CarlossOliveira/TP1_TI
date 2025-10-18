@@ -28,56 +28,31 @@ def binning(list_num, alphabet, numberOccurrences, step, index):
     limite = np.max(list_num)
     max_interval = min_interval + step
 
-    print(alphabet)
-    print(numberOccurrences)
-    print(list_num)
-    # Initial filtering
-    mask_alphabet = (alphabet[index] >= min_interval) & (alphabet[index] <= max_interval)
-    alphabet_filtrado = alphabet[index][mask_alphabet]
-    ocorrencias_filtradas = numberOccurrences[index][mask_alphabet]
-
-    if len(ocorrencias_filtradas) == 0:
-        # Fallback if empty, e.g., use some default or min of alphabet
-        replacement_value = np.min(alphabet[index])  # or any default you want
-    else:
-        idx_max = np.argmax(ocorrencias_filtradas)
-        replacement_value = alphabet_filtrado[idx_max]
-
+    list_binning = list_num.copy()
+    
+    
     while min_interval <= limite:
-        if limite <= max_interval + step:
-            list_binning = np.where((list_num >= min_interval) & (list_num <= limite), list_num, replacement_value)
-            min_interval = max_interval + 1
+        # Máscara para valores no intervalo atual
+        mask = (list_binning >= min_interval) & (list_binning <= max_interval)
 
-            mask_alphabet = (alphabet[index] >= min_interval) & (alphabet[index] <= limite)
-            alphabet_filtrado = alphabet[index][mask_alphabet]
-            ocorrencias_filtradas = numberOccurrences[index][mask_alphabet]
+        # Obter alfabeto e ocorrências no intervalo
+        mask_alphabet = (alphabet[index] >= min_interval) & (alphabet[index] <= max_interval)
+        alphabet_filtrado = alphabet[index][mask_alphabet]
+        ocorrencias_filtradas = numberOccurrences[index][mask_alphabet]
 
-            if len(ocorrencias_filtradas) == 0:
-                replacement_value = np.min(alphabet[index])  # fallback
-            else:
-                idx_max = np.argmax(ocorrencias_filtradas)
-                replacement_value = alphabet_filtrado[idx_max]
+        # Determinar valor de substituição
+        if len(ocorrencias_filtradas) == 0:
+            replacement_value = min_interval  # valor padrão
         else:
-            list_binning = np.where((list_num >= min_interval) & (list_num <= max_interval), list_num, replacement_value)
-            min_interval = max_interval + 1
-            max_interval = min_interval + step
+            idx_max = np.argmax(ocorrencias_filtradas)
+            replacement_value = alphabet_filtrado[idx_max]
 
-            mask_alphabet = (alphabet[index] >= min_interval) & (alphabet[index] <= max_interval)
-            alphabet_filtrado = alphabet[index][mask_alphabet]
-            ocorrencias_filtradas = numberOccurrences[index][mask_alphabet]
+        # Aplicar substituição
+        list_binning[mask] = replacement_value
 
-            if len(ocorrencias_filtradas) == 0:
-                replacement_value = np.min(alphabet[index])  # fallback
-            else:
-                idx_max = np.argmax(ocorrencias_filtradas)
-                replacement_value = alphabet_filtrado[idx_max]
+        # Avançar intervalo
         min_interval = max_interval + 1
         max_interval = min_interval + step
-                
-        
-
-    print(list_binning)
-
     
 def main():
     data = pd.read_excel('data/CarDataSet.xlsx') # Read the Excel file
@@ -126,7 +101,7 @@ def main():
     steps = [5, 5, 50] 
     var_names_arr = np.array(var_names) #where so trabalha com arr
 
-    for i in range(len(colunasVariveis)):
+    for i in range(1):
         var = colunasVariveis[i]
         step = steps[i]
                 
