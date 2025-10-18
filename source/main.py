@@ -13,15 +13,28 @@ def create_plot(x, y, x_data, y_data, num_plot, comp):
 
 
 def create_plot_bar(alphabet, numberOccurrences, var_names):
-        
+            
     plt.figure(layout = "tight", num = f"Nuemro de - {var_names}")
-    plt.bar(alphabet.astype("str"), numberOccurrences, color='red', align= "center")
+    plt.bar(alphabet, numberOccurrences, color='red', align= "center") #alphabet_str = alphabet.astype(str) 25.0 -> 25 mas estraga os outros graficos
     plt.title('Distribuição ' + var_names)
     plt.xlabel(var_names)
     plt.ylabel("Count")
     plt.tight_layout()
     plt.autoscale()
-    #plt.show()
+    plt.show()
+    
+def extractAlphabetCounts(matrix_uint16, var_names):
+    
+    alphabet = [None] * len(var_names)
+    numberOccurrences = [None] * len(var_names)
+
+    for i in range(len(var_names)):
+        unique_vals, counts = np.unique(matrix_uint16[:, i], return_counts=True)
+        alphabet[i] = unique_vals.astype(np.uint16)
+        numberOccurrences[i] = counts.astype(np.uint16)
+
+    return alphabet, numberOccurrences
+    
     
 def binning(list_num, alphabet, numberOccurrences, step, index):
     min_interval = np.min(list_num)
@@ -53,6 +66,12 @@ def binning(list_num, alphabet, numberOccurrences, step, index):
         # Avançar intervalo
         min_interval = max_interval + 1
         max_interval = min_interval + step
+        
+    return list_binning
+        
+def mudar_coluna(matriz, coluna, n_col):
+    matriz[:, n_col] = coluna
+    return matriz
     
 def main():
     data = pd.read_excel('data/CarDataSet.xlsx') # Read the Excel file
@@ -81,13 +100,7 @@ def main():
             
     # 4)
     
-    alphabet = [None] * len(var_names)
-    numberOccurrences = [None] * len(var_names)
-
-    for i in range(len(var_names)):
-        unique_vals, counts = np.unique(matrix_uint16[:, i], return_counts=True)
-        alphabet[i] = unique_vals.astype(np.uint16)
-        numberOccurrences[i] = counts.astype(np.uint16)
+    alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, var_names)
     
     
     # 5)
@@ -109,9 +122,12 @@ def main():
                                                      #np.where(var_names_arr == var)[0][0] → retorna: 3
         # Extrair a coluna de dados como uint16
         list_num = matrix[:, index].astype(np.uint16)
-        
-        binning(list_num, alphabet, numberOccurrences, step, index)
-                
+        list_binning = binning(list_num, alphabet, numberOccurrences, step, index)
+        matrix = mudar_coluna(matrix, list_binning, index)
+    
+    alphabet, numberOccurrences = extractAlphabetCounts(matrix, var_names)
+    create_plot_bar(alphabet, numberOccurrences, var_names)
+    
     
 if __name__ == "__main__":
     main()
