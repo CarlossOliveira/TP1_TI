@@ -1,6 +1,7 @@
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
+import huffmancodec as huffc
 
 # Function to create plots
 def create_plot(x, y, x_data, y_data, num_plot, comp):
@@ -73,6 +74,11 @@ def calcularEntropia(numberOccurrences):
     H = -np.sum(p * np.log2(p))
     return H
 
+# Huffman
+def huffman(numberOccurrences, list_num):
+    codec = huffc.HuffmanCodec.from_data(list_num)
+    symbols, lenghts = codec.get_code_len()
+
 def main():
     # Ex1: ler dados
     data = pd.read_excel('/Users/miguel/Desktop/GitHub/TP1_TI/data/CarDataset.xlsx')
@@ -123,7 +129,7 @@ def main():
             counts = numberOccurrences[i]
 
         entropia = calcularEntropia(counts)
-        print(f"Entropia da variável {var[:3]}= {entropia}")
+        print(f"H{var[:3]}= {entropia}")
 
 if __name__ == "__main__":
     main()
