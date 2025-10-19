@@ -75,9 +75,9 @@ def calcularEntropia(numberOccurrences):
     return H
 
 # Huffman
-def huffman(numberOccurrences, list_num):
-    codec = huffc.HuffmanCodec.from_data(list_num)
-    symbols, lenghts = codec.get_code_len()
+# def huffman(numberOccurrences, list_num):
+#     codec = huffc.HuffmanCodec.from_data(list_num)
+#     symbols, lenghts = codec.get_code_len()
 
 def main():
     # Ex1: ler dados
@@ -123,7 +123,7 @@ def main():
 
     # Ex7: calculate entrophy 
     for i, var in enumerate(var_names):
-        if var in var_names:
+        if var in columnsVar:
             unique_vals, counts = np.unique(binned_data[:, i], return_counts=True)
         else:
             counts = numberOccurrences[i]
