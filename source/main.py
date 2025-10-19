@@ -117,9 +117,13 @@ def main():
 
     # Ex7: calculate entrophy 
     for i, var in enumerate(var_names):
-        counts = numberOccurrences[i]
+        if var in var_names:
+            unique_vals, counts = np.unique(binned_data[:, i], return_counts=True)
+        else:
+            counts = numberOccurrences[i]
+
         entropia = calcularEntropia(counts)
-        print(f"Entropia da variável {var}: {entropia}")
+        print(f"Entropia da variável {var[:3]}= {entropia}")
 
 if __name__ == "__main__":
     main()
