@@ -69,7 +69,6 @@ def binning(list_num, alphabet, numberOccurrences, step, index):
  
 # Functoin to calculate entrophy
 def calcularEntropia(numberOccurrences):
-    numberOccurrences = numberOccurrences[numberOccurrences>0]
     p = numberOccurrences / np.sum(numberOccurrences)
     H = -np.sum(p * np.log2(p))
     return H
