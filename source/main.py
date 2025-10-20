@@ -13,12 +13,12 @@ def create_plot(x, y, x_data, y_data, num_plot, comp):
 
 
 def create_plot_bar(alphabet, numberOccurrences, var_names):
-            
     plt.figure(layout = "tight", num = f"Nuemro de - {var_names}")
     plt.bar(alphabet.astype('str'), numberOccurrences, color='red', align= "center") #alphabet_str = alphabet.astype(str) 25.0 -> 25 mas estraga os outros graficos
     plt.title('Distribuição ' + var_names)
     plt.xlabel(var_names)
     plt.ylabel("Count")
+    plt.xticks(rotation = 90)
     plt.tight_layout()
     plt.autoscale()
     plt.show()
@@ -34,7 +34,6 @@ def extractAlphabetCounts(matrix_uint16, var_names):
         numberOccurrences[i] = counts.astype(np.uint16)
 
     return alphabet, numberOccurrences
-    
     
 def binning(matrix, step, indice):
     colunaVar = matrix[:, indice].copy()
@@ -59,10 +58,6 @@ def binning(matrix, step, indice):
     matrix[:, indice] = colunaVar
     return matrix
 
-def mudar_coluna(matriz, coluna, n_col):
-    matriz[:, n_col] = coluna
-    return matriz
-
 def calcularEntropia(numberOccurrences):
     p = numberOccurrences / np.sum(numberOccurrences)
     H = -np.sum(p * np.log2(p))
@@ -82,16 +77,14 @@ def main():
     
     plt.figure(layout="tight", num="relação entre MPG e as diferentes variáveis (características do carro)", figsize=(10,6)) 
     
-    
     # Create scatter plots for MPG vs each of the other variables
     
     comp_var = len(var_names) - 1
     
     for i in range(comp_var):
         create_plot(var_names[i], var_names[comp_var], data[var_names[i]], data[var_names[comp_var]], i + 1, comp_var)
-    #plt.show()
-    
-    
+    plt.show()    
+
     # 3)
     
     # Convert all the data in matrix to uint16
@@ -102,32 +95,46 @@ def main():
     
     alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, var_names)
     
-    
     # 5)
     
     for i in range(comp_var):    
         create_plot_bar(alphabet[i], numberOccurrences[i], var_names[i])
 
-    #6 
+    # 6) 
     
-    colunasVariveis = ['Displacement', 'Horsepower', 'Weight']
-    steps = [5, 5, 50] 
+    columnsVar = ['Displacement', 'Horsepower', 'Weight']
+    step_sizes = [5, 5, 40]
+    binned_data = matrix_uint16.copy() 
     var_names_arr = np.array(var_names) #where so trabalha com arr
+    updated_counts = {}
 
-    for i in range(len(colunasVariveis)):
-        var = colunasVariveis[i]
-        step = steps[i]
-                
-        index = np.where(var_names_arr == var)[0][0] #np.where(var_names_arr == var)[0] → retorna: array([3]) 
-                                                     #np.where(var_names_arr == var)[0][0] → retorna: 3
-        # Extrair a coluna de dados como uint16
-        list_num = matrix[:, index].astype(np.uint16)
-        list_binning = binning(list_num, alphabet, numberOccurrences, step, index)
-        matrix = mudar_coluna(matrix, list_binning, index)
-    
-    alphabet, numberOccurrences = extractAlphabetCounts(matrix, var_names)
-    create_plot_bar(alphabet, numberOccurrences, var_names)
+    for i in range(len(columnsVar)):
+        var = columnsVar[i]
+        step = step_sizes[i]
+        index = index = np.where(var_names_arr == var)[0][0]    #np.where(var_names_arr == var)[0] → retorna: array([3]) 
+                                                                #np.where(var_names_arr == var)[0][0] → retorna: 3
+
+        binned_data = binning(binned_data, step, index)
+
+        unique_vals, counts = np.unique(binned_data[:, index], return_counts=True)
+        create_plot_bar(unique_vals, counts, var)
         
+        updated_counts[var] = counts
+
+
+
+    # 7) 
+    
+    for i in range(len(var_names)):
+        var = var_names[i]
+
+        if var in updated_counts:
+            counts = updated_counts[var]
+        else:
+            counts = numberOccurrences[i]
+
+        entropia = calcularEntropia(counts)
+        print(f"H{var[:3]} = {entropia}") 
     
     
 if __name__ == "__main__":
