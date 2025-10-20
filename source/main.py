@@ -12,16 +12,16 @@ def create_plot(x, y, x_data, y_data, num_plot, comp):
     plt.autoscale() #ajusta automaticamente os limites dos eixos (X e Y) com base nos dados que foram desenhados no gráfico.    
 
 
-#def create_plot_bar(alphabet, numberOccurrences, var_names):
+def create_plot_bar(alphabet, numberOccurrences, var_names):
             
-    #plt.figure(layout = "tight", num = f"Nuemro de - {var_names}")
-    #plt.bar(alphabet, numberOccurrences, color='red', align= "center") #alphabet_str = alphabet.astype(str) 25.0 -> 25 mas estraga os outros graficos
-    #plt.title('Distribuição ' + var_names)
-    #plt.xlabel(var_names)
-    #plt.ylabel("Count")
-    #plt.tight_layout()
-    #plt.autoscale()
-    #plt.show()
+    plt.figure(layout = "tight", num = f"Nuemro de - {var_names}")
+    plt.bar(alphabet.astype('str'), numberOccurrences, color='red', align= "center") #alphabet_str = alphabet.astype(str) 25.0 -> 25 mas estraga os outros graficos
+    plt.title('Distribuição ' + var_names)
+    plt.xlabel(var_names)
+    plt.ylabel("Count")
+    plt.tight_layout()
+    plt.autoscale()
+    plt.show()
     
 def extractAlphabetCounts(matrix_uint16, var_names):
     
@@ -36,46 +36,39 @@ def extractAlphabetCounts(matrix_uint16, var_names):
     return alphabet, numberOccurrences
     
     
-def binning(list_num, alphabet, numberOccurrences, step, index):
-    min_interval = (np.min(list_num) // step) * step #Alinha o início do bin com múltiplos de step, evitando lacunas e sobreposição.
-    limite = np.max(list_num)
-    max_interval = min_interval + step
+def binning(matrix, step, indice):
+    colunaVar = matrix[:, indice].copy()
+    valorMin = np.min(colunaVar)
+    valorMax = np.max(colunaVar)
 
-    list_binning = list_num.copy()
-    replacement_value_antigo = min_interval
-    
-    while min_interval <= limite:
-        # Máscara sem sobreposição
-        if max_interval >= limite:
-            mask = (list_binning >= min_interval) & (list_binning <= limite)
-        else:
-            mask = (list_binning >= min_interval) & (list_binning < max_interval)
+    for i in range(valorMin, valorMax + 1, step):
+        intervalo = (colunaVar >= i) & (colunaVar < i + step)
+        if not np.any(intervalo):
+            continue
+        # Use bincount to find the most frequent value in the interval
+        values_in_interval = colunaVar[intervalo]
+        if len(values_in_interval) == 0:
+            continue
+        unique_values, counts = np.unique(values_in_interval, return_counts=True)
+        replacement_value = unique_values[np.argmax(counts)]
+        colunaVar[intervalo] = replacement_value
 
-        # Filtrar de alfabeto e ocorrências
-        mask_alphabet = (alphabet[index] >= min_interval) & (alphabet[index] < max_interval)
-        alphabet_filtrado = alphabet[index][mask_alphabet]
-        ocorrencias_filtradas = numberOccurrences[index][mask_alphabet]
+    matrix[:, indice] = colunaVar
+    return matrix
 
-        # Determinar valor de substituição
-        if len(ocorrencias_filtradas) == 0:
-            replacement_value = replacement_value_antigo #Guarda o último valor válido para bins que não tenham correspondência, garantindo substituição consistente.
-        else:
-            idx_max = np.argmax(ocorrencias_filtradas)
-            replacement_value = alphabet_filtrado[idx_max]
-            replacement_value_antigo = replacement_value
-
-        # Aplicar substituição
-        list_binning[mask] = replacement_value
-
-        # Avançar intervalo sem lacunas
-        min_interval = max_interval
-        max_interval = min_interval + step
-        
-    return list_binning
-        
 def mudar_coluna(matriz, coluna, n_col):
     matriz[:, n_col] = coluna
     return matriz
+
+def calcularEntropia(numberOccurrences):
+    p = numberOccurrences / np.sum(numberOccurrences)
+    H = -np.sum(p * np.log2(p))
+    return H
+
+# Huffman
+# def huffman(numberOccurrences, list_num):
+#     codec = huffc.HuffmanCodec.from_data(list_num)
+#     symbols, lenghts = codec.get_code_len()
     
 def main():
     data = pd.read_excel('data/CarDataSet.xlsx') # Read the Excel file
@@ -109,8 +102,8 @@ def main():
     
     # 5)
     
-    #for i in range(comp_var):    
-        #create_plot_bar(alphabet[i], numberOccurrences[i], var_names[i])
+    for i in range(comp_var):    
+        create_plot_bar(alphabet[i], numberOccurrences[i], var_names[i])
 
     #6 
     
@@ -118,7 +111,7 @@ def main():
     steps = [5, 5, 50] 
     var_names_arr = np.array(var_names) #where so trabalha com arr
 
-    for i in range(1):
+    for i in range(len(colunasVariveis)):
         var = colunasVariveis[i]
         step = steps[i]
                 
@@ -126,13 +119,11 @@ def main():
                                                      #np.where(var_names_arr == var)[0][0] → retorna: 3
         # Extrair a coluna de dados como uint16
         list_num = matrix[:, index].astype(np.uint16)
-        print(list_num)
         list_binning = binning(list_num, alphabet, numberOccurrences, step, index)
-        print(list_binning)
         matrix = mudar_coluna(matrix, list_binning, index)
     
     alphabet, numberOccurrences = extractAlphabetCounts(matrix, var_names)
-    #create_plot_bar(alphabet, numberOccurrences, var_names)
+    create_plot_bar(alphabet, numberOccurrences, var_names)
         
     
     
