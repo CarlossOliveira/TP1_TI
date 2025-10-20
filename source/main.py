@@ -36,37 +36,24 @@ def extractAlphabetCounts(matrix_uint16, var_names):
     return alphabet, numberOccurrences
 
 # Function of binning
-def binning(list_num, alphabet, numberOccurrences, step, index):
-    min_interval = np.min(list_num)
-    limite = np.max(list_num)
-    max_interval = min_interval + step
+def binning(matrix, step, indice):
+    colunaVar = matrix[:, indice].copy()
+    valorMax = np.max(colunaVar)
 
-    list_binning = list_num.copy()
+    for i in range(0, valorMax + 1, step):
+        intervalo = (colunaVar >= i) & (colunaVar < i + step)
+        if not np.any(intervalo):
+            continue
+        # Use bincount to find the most frequent value in the interval
+        values_in_interval = colunaVar[intervalo]
+        if len(values_in_interval) == 0:
+            continue
+        unique_values, counts = np.unique(values_in_interval, return_counts=True)
+        replacement_value = unique_values[np.argmax(counts)]
+        colunaVar[intervalo] = replacement_value
 
-    while min_interval <= limite:
-        # Máscara para valores no intervalo atual
-        mask = (list_binning >= min_interval) & (list_binning <= max_interval)
-
-        # Obter alfabeto e ocorrências no intervalo
-        mask_alphabet = (alphabet[index] >= min_interval) & (alphabet[index] <= max_interval)
-        alphabet_filtred = alphabet[index][mask_alphabet]
-        occurrences_filtred = numberOccurrences[index][mask_alphabet]
-
-        # Determinar valor de substituição
-        if len(occurrences_filtred) == 0:
-            replacement_value = min_interval
-        else:
-            idx_max = np.argmax(occurrences_filtred)
-            replacement_value = alphabet_filtred[idx_max]
-
-        # Aplicar valor de substituição
-        list_binning[mask] = replacement_value
-
-        # Avançar intervalo
-        min_interval = max_interval + 1
-        max_interval = min_interval + step
-
-    return list_binning
+    matrix[:, indice] = colunaVar
+    return matrix
  
 # Functoin to calculate entrophy
 def calcularEntropia(numberOccurrences):
@@ -84,7 +71,8 @@ def main():
     data = pd.read_excel('/Users/miguel/Desktop/GitHub/TP1_TI/data/CarDataset.xlsx')
     matrix = data.values # Convert the DataFrame to a matrix, funcao de pandas
     var_names = data.columns.values.tolist() # Get the column names
-    
+    updated_counts = {}
+
     # Ex2: Create scatter plots for MPG vs each of the other variables
     plt.figure(layout="tight", num="relação entre MPG e as diferentes variáveis (características do carro)", figsize=(10,6))
     comp_var = len(var_names) - 1
@@ -104,27 +92,30 @@ def main():
 
     # Ex6: apply binning to some variables
     columnsVar = ['Displacement', 'Horsepower', 'Weight']
-    steps = [5, 5, 40]
-    var_names_arr = np.array(var_names)
+    step_sizes = [5, 5, 40]
     binned_data = matrix_uint16.copy() 
 
-    for i in range (len(columnsVar)):
-        var = columnsVar[i]
-        step = steps[i]
-        index = np.where(var_names_arr == var)[0][0] 
+    # Build a mapping from variable names to their indices for efficient lookup
+    var_name_to_index = {}
+    for idx, name in enumerate(var_names):
+        var_name_to_index[name] = idx
 
-        # Passar o nome da variável para binning
-        list_num = matrix_uint16[:, index]
-        binned_data[:, index] = binning(list_num, alphabet, numberOccurrences, step, index)
-    
-        # Contar ocorrências dos valores binados
+    for i in range(len(columnsVar)):
+        var = columnsVar[i]
+        step = step_sizes[i]
+        index = var_name_to_index[var]
+
+        binned_data = binning(binned_data, step, index)
+
+        # Visualize the distribution after binning
         unique_vals, counts = np.unique(binned_data[:, index], return_counts=True)
+        updated_counts[var] = counts
         create_plot_bar(unique_vals, counts, var)
 
     # Ex7: calculate entrophy 
     for i, var in enumerate(var_names):
-        if var in columnsVar:
-            unique_vals, counts = np.unique(binned_data[:, i], return_counts=True)
+        if var in updated_counts:
+            counts = updated_counts[var]
         else:
             counts = numberOccurrences[i]
 
