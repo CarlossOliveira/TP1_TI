@@ -38,7 +38,7 @@ def extractAlphabetCounts(matrix_uint16, var_names):
 # Function of binning
 def binning(matrix, step, indice):
     colunaVar = matrix[:, indice].copy()
-    valorMax = np.max(colunaVar)
+    valorMax = int(np.max(colunaVar))
 
     for i in range(0, valorMax + 1, step):
         intervalo = (colunaVar >= i) & (colunaVar < i + step)
@@ -50,7 +50,8 @@ def binning(matrix, step, indice):
             continue
         unique_values, counts = np.unique(values_in_interval, return_counts=True)
         replacement_value = unique_values[np.argmax(counts)]
-        colunaVar[intervalo] = replacement_value
+
+        colunaVar = np.where(intervalo, replacement_value, colunaVar)
 
     matrix[:, indice] = colunaVar
     return matrix
@@ -62,16 +63,17 @@ def calcularEntropia(numberOccurrences):
     return H
 
 # Huffman
-# def huffman(numberOccurrences, list_num):
-#     codec = huffc.HuffmanCodec.from_data(list_num)
-#     symbols, lenghts = codec.get_code_len()
+def huffman(numberOccurrences, list_num):
+    codec = huffc.HuffmanCodec.from_data(list_num)
+    symbols, lenghts = codec.get_code_len()
+
+
 
 def main():
     # Ex1: ler dados
     data = pd.read_excel('/Users/miguel/Desktop/GitHub/TP1_TI/data/CarDataset.xlsx')
     matrix = data.values # Convert the DataFrame to a matrix, funcao de pandas
     var_names = data.columns.values.tolist() # Get the column names
-    updated_counts = {}
 
     # Ex2: Create scatter plots for MPG vs each of the other variables
     plt.figure(layout="tight", num="relação entre MPG e as diferentes variáveis (características do carro)", figsize=(10,6))
@@ -94,16 +96,13 @@ def main():
     columnsVar = ['Displacement', 'Horsepower', 'Weight']
     step_sizes = [5, 5, 40]
     binned_data = matrix_uint16.copy() 
-
-    # Build a mapping from variable names to their indices for efficient lookup
-    var_name_to_index = {}
-    for idx, name in enumerate(var_names):
-        var_name_to_index[name] = idx
-
+    var_names_arr = np.array(var_names)
+    updated_counts = {}
+    
     for i in range(len(columnsVar)):
         var = columnsVar[i]
         step = step_sizes[i]
-        index = var_name_to_index[var]
+        index = np.where(var_names_arr == var)[0][0]
 
         binned_data = binning(binned_data, step, index)
 
@@ -113,7 +112,9 @@ def main():
         create_plot_bar(unique_vals, counts, var)
 
     # Ex7: calculate entrophy 
-    for i, var in enumerate(var_names):
+    for i in range (len(var_names)):
+        var = var_names[i]
+        
         if var in updated_counts:
             counts = updated_counts[var]
         else:
