@@ -41,12 +41,14 @@ def binning(matrix, step, indice):
 
     for i in range(0, valorMax + 1, step):
         intervalo = (colunaVar >= i) & (colunaVar < i + step)
+
         if not np.any(intervalo):
             continue
-        # Use bincount to find the most frequent value in the interval
+
         values_in_interval = colunaVar[intervalo]
         if len(values_in_interval) == 0:
             continue
+        
         unique_values, counts = np.unique(values_in_interval, return_counts=True)
         replacement_value = unique_values[np.argmax(counts)]
 
