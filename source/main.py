@@ -14,7 +14,7 @@ def create_plot(x, y, x_data, y_data, num_plot, comp):
 
 # Function to plot bars
 def create_plot_bar(alphabet, numberOccurrences, var_names):
-    plt.figure(layout = "tight", num = f"Nuemro de - {var_names}")
+    plt.figure(layout = "tight", num = f"Numero de - {var_names}")
     plt.bar(alphabet.astype('str'), numberOccurrences, color='red', align= "center")
     plt.title('Distribuição ' + var_names)
     plt.xlabel(var_names)
@@ -63,11 +63,21 @@ def calcularEntropia(numberOccurrences):
     return H
 
 # Huffman
-def huffman(numberOccurrences, list_num):
-    codec = huffc.HuffmanCodec.from_data(list_num)
-    symbols, lenghts = codec.get_code_len()
+def huffman(data, numberOccurrences):
+    codec = huffc.HuffmanCodec.from_data(data)
+    symbols, lenghts = codec.get_code_len() # retorna os símbolos e as lengths organizadas como no alphabet
 
+    # Criar dicionário para mapear símbolo -> comprimento Huffman
+    # Calcular probabilidades
+    p = numberOccurrences / np.sum(numberOccurrences)
 
+    # Comprimento médio (L) = soma(p_i * l_i)
+    comprimento_medio = np.sum(p * lenghts)
+
+    # Variância = soma(p_i * (l_i - L)^2)
+    variancia = np.sum(p * (lenghts - comprimento_medio) ** 2)
+
+    return comprimento_medio, variancia
 
 def main():
     # Ex1: ler dados
@@ -112,6 +122,7 @@ def main():
         create_plot_bar(unique_vals, counts, var)
 
     # Ex7: calculate entrophy 
+    print("Valor médio (teórico) de bits por símbolo:")
     for i in range (len(var_names)):
         var = var_names[i]
         
@@ -122,6 +133,12 @@ def main():
 
         entropia = calcularEntropia(counts)
         print(f"H{var[:3]}= {entropia}")
+
+    # Ex8: Huffman coding - número médio de bits por símbolo
+    print("\nNúmero médio de bits por símbolo e variância ponderada dos comprimentos:")
+    for i in range(len(var_names)):
+        comprimento_medio, variancia = huffman(matrix_uint16[:, i], numberOccurrences[i])
+        print(f"L{var_names[i][:3]}= {comprimento_medio} bits/simbolo, Var= {variancia:}")
 
 if __name__ == "__main__":
     main()
