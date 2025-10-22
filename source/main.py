@@ -1,7 +1,7 @@
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
-import huffmancodec as huffc
+import libraries.huffmancodec as huffc
 
 # Function to create plots
 def create_plot(x, y, x_data, y_data, num_plot, comp):
@@ -20,7 +20,6 @@ def create_plot_bar(alphabet, numberOccurrences, var_names):
     plt.xlabel(var_names)
     plt.ylabel("Count")
     plt.xticks(rotation = 90)
-
     plt.show()
 
 # Function to calculate number of occurrences
@@ -63,15 +62,25 @@ def calcularEntropia(numberOccurrences):
     return H
 
 # Huffman
-def huffman(numberOccurrences, list_num):
-    codec = huffc.HuffmanCodec.from_data(list_num)
-    symbols, lenghts = codec.get_code_len()
+def huffman(data, numberOccurrences):
+    codec = huffc.HuffmanCodec.from_data(data)
+    symbols, lengths = codec.get_code_len() # Retorna os símbolos e as lenghts organizadas como no alphabet
 
+    # Criar dicionário para mapear símbolo -> comprimento Huffman    
+    # Calcular probabilidades
+    p = numberOccurrences / np.sum(numberOccurrences)
+    
+    # Comprimento médio (L) = soma(p_i * l_i)
+    comprimento_medio = np.sum(p * lengths)
+    
+    # Variância = soma(p_i * (l_i - L)^2)
+    variancia = np.sum(p * (lengths - comprimento_medio) ** 2)
 
+    return comprimento_medio, variancia
 
 def main():
     # Ex1: ler dados
-    data = pd.read_excel('/Users/miguel/Desktop/GitHub/TP1_TI/data/CarDataset.xlsx')
+    data = pd.read_excel('./data/CarDataset.xlsx')
     matrix = data.values # Convert the DataFrame to a matrix, funcao de pandas
     var_names = data.columns.values.tolist() # Get the column names
 
@@ -84,7 +93,7 @@ def main():
     
     # Ex3: Convert all the data in matrix to uint16
     matrix_uint16 = matrix.astype(np.uint16) 
-           
+
     # Ex4: Calculate occurrences
     alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, var_names)
 
@@ -122,6 +131,11 @@ def main():
 
         entropia = calcularEntropia(counts)
         print(f"H{var[:3]}= {entropia}")
+        
+    # Ex8: Huffman coding - número médio de bits por símbolo    
+    for i in range(len(var_names)):
+        comprimento_medio, variancia = huffman(matrix_uint16[:, i], numberOccurrences[i])
+        print(f"L{var_names[i][:3]}= {comprimento_medio:.4f} bits/símbolo, Var= {variancia:.4f}")
 
 if __name__ == "__main__":
     main()
