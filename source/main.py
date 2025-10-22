@@ -57,7 +57,7 @@ def binning(matrix, step, indice):
     matrix[:, indice] = colunaVar
     return matrix
 
-# Functoin to calculate entrophy
+# Function to calculate entropy
 def calcularEntropia(numberOccurrences):
     p = numberOccurrences / np.sum(numberOccurrences)
     H = -np.sum(p * np.log2(p))
