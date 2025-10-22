@@ -1,43 +1,141 @@
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
+import libraries.huffmancodec as huffc
 
-
-def create_plot(y, x, y_data, x_data, num_plot=1):
-    plt.subplot(3,2,num_plot)
-    plt.scatter(x_data,y_data,color="m")
+# Function to create plots
+def create_plot(x, y, x_data, y_data, num_plot, comp):
+    plt.subplot(comp//2,2,num_plot) #grafico 3 linhas 2 colunas
+    plt.scatter(x_data,y_data,color="m") #O eixo x recebe os valores de x_data, O eixo y recebe os valores de y_data.
     plt.xlabel(x)
     plt.ylabel(y)
     plt.title(f'{y} vs. {x}')
-    plt.autoscale()
+    plt.autoscale() #ajusta automaticamente os limites dos eixos (X e Y) com base nos dados que foram desenhados no gráfico. 
 
-def main():
-    data = pd.read_excel('data/CarDataSet.xlsx') # Read the Excel file
-    matrix = data.values # Convert the DataFrame to a matrix
-    var_names = data.columns.values.tolist() # Get the column names
-
-    # Create plot window, give it a title and configure grid layout
-    plt.figure(layout="tight", num="relação entre MPG e as diferentes variáveis (características do carro)", figsize=(15,10))
-    
-    # Create scatter plots for MPG vs each of the other variables
-    for i in range(6):
-        create_plot(var_names[6], var_names[i], data[var_names[6]], data[var_names[i]], i + 1)
-    
-    # Convert all the data in matrix to uint16
-    matrix_uint16 = matrix.astype(np.uint16)
-    
-    # Create an alphabet for matrix_uint16
-    alphabet = np.unique(matrix_uint16)
-    
-    # Calculate the number of occurrences of each element of the alphabet in each variable (column)
-    total_occurrences = np.zeros((len(var_names), len(alphabet)), dtype=np.uint16) # Creates a 2 axis array (matrix) filled with 0s with the number of rows equal to the number of variables (columns in the original matrix) and the number of columns equal to the number of unique elements in the alphabet. This matrix will be used to store the count of occurrences of each element of the alphabet in each variable (column).
-    for col in range(len(var_names)):
-        for symbol in range(len(alphabet)):
-            occurrences = matrix_uint16[:, col] == alphabet[symbol] # Creates a boolean array where the symbol is found in the column. Example case: We are searching for the number of occurences of the symbol 5 in column 0 (column 0 = [5,2,5,6,0,89,5]). The occurrences array will be [True, False, True, False, False, False, True] where True indicates the presence of the symbol.
-            total_occurrences[col, symbol] = np.sum(occurrences) # Sum the boolean array to get the number of occurrences of the symbol. NOTE: It's important to remember that in Python, True is equivalent to 1 and False is equivalent to 0. So, summing the boolean array gives the count of True values, which corresponds to the number of occurrences of the symbol in the column.
-    
+# Function to plot bars
+def create_plot_bar(alphabet, numberOccurrences, var_names):
+    plt.figure(layout = "tight", num = f"Nuemro de - {var_names}")
+    plt.bar(alphabet.astype('str'), numberOccurrences, color='red', align= "center")
+    plt.title('Distribuição ' + var_names)
+    plt.xlabel(var_names)
+    plt.ylabel("Count")
+    plt.xticks(rotation = 90)
     plt.show()
 
+# Function to calculate number of occurrences
+def extractAlphabetCounts(matrix_uint16, var_names):
+    alphabet = [None] * len(var_names)
+    numberOccurrences = [None] * len(var_names)
+    
+    for i in range (len(var_names)):
+        unique_vals, counts = np.unique(matrix_uint16[:, i], return_counts=True)
+        alphabet[i] = unique_vals.astype(np.uint16)
+        numberOccurrences[i] = counts.astype(np.uint16)
+
+    return alphabet, numberOccurrences
+
+# Function of binning
+def binning(matrix, step, indice):
+    colunaVar = matrix[:, indice].copy()
+    valorMax = int(np.max(colunaVar))
+
+    for i in range(0, valorMax + 1, step):
+        intervalo = (colunaVar >= i) & (colunaVar < i + step)
+        if not np.any(intervalo):
+            continue
+        # Use bincount to find the most frequent value in the interval
+        values_in_interval = colunaVar[intervalo]
+        if len(values_in_interval) == 0:
+            continue
+        unique_values, counts = np.unique(values_in_interval, return_counts=True)
+        replacement_value = unique_values[np.argmax(counts)]
+
+        colunaVar = np.where(intervalo, replacement_value, colunaVar)
+
+    matrix[:, indice] = colunaVar
+    return matrix
+
+# Functoin to calculate entrophy
+def calcularEntropia(numberOccurrences):
+    p = numberOccurrences / np.sum(numberOccurrences)
+    H = -np.sum(p * np.log2(p))
+    return H
+
+# Huffman
+def huffman(data, numberOccurrences):
+    codec = huffc.HuffmanCodec.from_data(data)
+    symbols, lengths = codec.get_code_len() # Retorna os símbolos e as lenghts organizadas como no alphabet
+
+    # Criar dicionário para mapear símbolo -> comprimento Huffman    
+    # Calcular probabilidades
+    p = numberOccurrences / np.sum(numberOccurrences)
+    
+    # Comprimento médio (L) = soma(p_i * l_i)
+    comprimento_medio = np.sum(p * lengths)
+    
+    # Variância = soma(p_i * (l_i - L)^2)
+    variancia = np.sum(p * (lengths - comprimento_medio) ** 2)
+
+    return comprimento_medio, variancia
+
+def main():
+    # Ex1: ler dados
+    data = pd.read_excel('./data/CarDataset.xlsx')
+    matrix = data.values # Convert the DataFrame to a matrix, funcao de pandas
+    var_names = data.columns.values.tolist() # Get the column names
+
+    # Ex2: Create scatter plots for MPG vs each of the other variables
+    plt.figure(layout="tight", num="relação entre MPG e as diferentes variáveis (características do carro)", figsize=(10,6))
+    comp_var = len(var_names) - 1
+    for i in range(comp_var):
+        create_plot(var_names[i], var_names[comp_var], data[var_names[i]], data[var_names[comp_var]], i + 1, comp_var)
+    plt.show()
+    
+    # Ex3: Convert all the data in matrix to uint16
+    matrix_uint16 = matrix.astype(np.uint16) 
+
+    # Ex4: Calculate occurrences
+    alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, var_names)
+
+    # Ex5: Plot bars
+    for i in range (comp_var):
+        create_plot_bar(alphabet[i], numberOccurrences[i], var_names[i])
+
+    # Ex6: apply binning to some variables
+    columnsVar = ['Displacement', 'Horsepower', 'Weight']
+    step_sizes = [5, 5, 40]
+    binned_data = matrix_uint16.copy() 
+    var_names_arr = np.array(var_names)
+    updated_counts = {}
+    
+    for i in range(len(columnsVar)):
+        var = columnsVar[i]
+        step = step_sizes[i]
+        index = np.where(var_names_arr == var)[0][0]
+
+        binned_data = binning(binned_data, step, index)
+
+        # Visualize the distribution after binning
+        unique_vals, counts = np.unique(binned_data[:, index], return_counts=True)
+        updated_counts[var] = counts
+        create_plot_bar(unique_vals, counts, var)
+
+    # Ex7: calculate entrophy 
+    for i in range (len(var_names)):
+        var = var_names[i]
+        
+        if var in updated_counts:
+            counts = updated_counts[var]
+        else:
+            counts = numberOccurrences[i]
+
+        entropia = calcularEntropia(counts)
+        print(f"H{var[:3]}= {entropia}")
+        
+    # Ex8: Huffman coding - número médio de bits por símbolo    
+    for i in range(len(var_names)):
+        comprimento_medio, variancia = huffman(matrix_uint16[:, i], numberOccurrences[i])
+        print(f"L{var_names[i][:3]}= {comprimento_medio:.4f} bits/símbolo, Var= {variancia:.4f}")
 
 if __name__ == "__main__":
     main()
