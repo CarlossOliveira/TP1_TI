@@ -137,7 +137,11 @@ def main():
     # Ex8: Huffman coding - número médio de bits por símbolo
     print("\nNúmero médio de bits por símbolo e variância ponderada dos comprimentos:")
     for i in range(len(var_names)):
-        comprimento_medio, variancia = huffman(matrix_uint16[:, i], numberOccurrences[i])
+        var = var_names[i]
+        if var in updated_counts:
+            comprimento_medio, variancia = huffman(binned_data[:, i], updated_counts[var])
+        else:
+            comprimento_medio, variancia = huffman(matrix_uint16[:, i], numberOccurrences[i])
         print(f"L{var_names[i][:3]}= {comprimento_medio} bits/simbolo, Var= {variancia:}")
 
 if __name__ == "__main__":
