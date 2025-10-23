@@ -1,7 +1,7 @@
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
-import huffmancodec as huffc
+import huffmancodec as huffc 
 
 # Function to create plots
 def create_plot(x, y, x_data, y_data, num_plot, comp):
@@ -42,11 +42,12 @@ def binning(matrix, step, indice):
 
     for i in range(valorMin, valorMax + 1, step): #nao comeca em 0 mas sim no valor min
         intervalo = (colunaVar >= i) & (colunaVar < i + step)
-        #agora o loop so cobre o intrevalo relevante
+        # Agora o loop so cobre o intrevalo relevante
         
         values_in_interval = colunaVar[intervalo]
-        if len(values_in_interval) == 0:
+        if len(values_in_interval) == 0: # O argmax exige pelo menos um argumento
             continue
+        
         unique_values, counts = np.unique(values_in_interval, return_counts=True)
         replacement_value = unique_values[np.argmax(counts)]
 
