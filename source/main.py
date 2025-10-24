@@ -87,29 +87,10 @@ def main():
         create_plot(var_names[i], var_names[comp_var], data[var_names[i]], data[var_names[comp_var]], i + 1, comp_var)
     plt.show()
     
-<<<<<<< HEAD
-    # Create scatter plots for MPG vs each of the other variables
-    for i in range(6):
-        create_plot(var_names[6], var_names[i], data[var_names[6]], data[var_names[i]], i + 1)
-    
-    # Convert all the data in matrix to uint16
-    matrix_uint16 = matrix.astype(np.uint16)
-    
-    # Create an alphabet for matrix_uint16 and sort it
-    alphabet = np.array([], dtype=np.uint16)
-    alphabet = np.unique(matrix_uint16)
-    alphabet = np.sort(alphabet)
-    
-    # Calculate the number of occurrences of each element of the alphabet in each variable of matrix_uint16s
-    
-    
-    #plt.show()
-=======
     # Ex3: Convert all the data in matrix to uint16
     matrix_uint16 = matrix.astype(np.uint16) 
     # Ex4: Calculate occurrences
     alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, var_names)
->>>>>>> 4e37d14feba918af7f75229c2fc3c2ce4a3907cd
 
     # Ex5: Plot bars
     for i in range (comp_var):
