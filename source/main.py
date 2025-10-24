@@ -13,21 +13,21 @@ def create_plot(x, y, x_data, y_data, num_plot, comp):
     plt.autoscale() #ajusta automaticamente os limites dos eixos (X e Y) com base nos dados que foram desenhados no gráfico. 
 
 # Function to plot bars
-def create_plot_bar(alphabet, numberOccurrences, var_names):
-    plt.figure(layout = "tight", num = f"Numero de {var_names}")
+def create_plot_bar(alphabet, numberOccurrences, VAR_NAMES):
+    plt.figure(layout = "tight", num = f"Numero de {VAR_NAMES}")
     plt.bar(alphabet.astype('str'), numberOccurrences, color='red', align= "center")
-    plt.title('Distribuição ' + var_names)
-    plt.xlabel(var_names)
+    plt.title('Distribuição ' + VAR_NAMES)
+    plt.xlabel(VAR_NAMES)
     plt.ylabel("Count")
     plt.xticks(rotation = 90)
     plt.show()
 
 # Function to calculate number of occurrences
-def extractAlphabetCounts(matrix_uint16, len_var):
-    alphabet = [None] * len_var
-    numberOccurrences = [None] * len_var
+def extractAlphabetCounts(matrix_uint16, LEN_VAR_NAMES):
+    alphabet = [None] * LEN_VAR_NAMES
+    numberOccurrences = [None] * LEN_VAR_NAMES
     
-    for i in range (len_var):
+    for i in range (LEN_VAR_NAMES):
         unique_vals, counts = np.unique(matrix_uint16[:, i], return_counts=True)
         alphabet[i] = unique_vals.astype(np.uint16)
         numberOccurrences[i] = counts.astype(np.uint16)
@@ -76,52 +76,52 @@ def huffman(data, p):
 
 def main():
     # Ex1: ler dados
-    data = pd.read_excel('./data/CarDataset.xlsx')
-    matrix = data.values # Convert the DataFrame to a matrix, funcao de pandas
-    var_names = data.columns.values.tolist() # Get the column names
-    len_var = len(var_names)
+    DATA = pd.read_excel('./data/CarDataset.xlsx')
+    MATRIX = DATA.values # Convert the DataFrame to a matrix, funcao de pandas
+    VAR_NAMES = DATA.columns.values.tolist() # Get the column names
+    LEN_VAR_NAMES = len(VAR_NAMES)
 
     # Ex2: Create scatter plots for MPG vs each of the other variables
     plt.figure(layout="tight", num="Relação entre MPG e as diferentes variáveis (características do carro)", figsize=(10,6))
-    comp_var = len_var - 1
-    for i in range(comp_var):
-        create_plot(var_names[i], var_names[comp_var], data[var_names[i]], data[var_names[comp_var]], i + 1, comp_var)
+    COMP_VAR = LEN_VAR_NAMES - 1
+    for i in range(COMP_VAR):
+        create_plot(VAR_NAMES[i], VAR_NAMES[COMP_VAR], DATA[VAR_NAMES[i]], DATA[VAR_NAMES[COMP_VAR]], i + 1, COMP_VAR)
     plt.show()
     
     # Ex3: Convert all the data in matrix to uint16
-    matrix_uint16 = matrix.astype(np.uint16) 
+    matrix_uint16 = MATRIX.astype(np.uint16) 
     # Ex4: Calculate occurrences
-    alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, len_var)
+    alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, LEN_VAR_NAMES)
 
     # Ex5: Plot bars
-    for i in range (comp_var):
-        create_plot_bar(alphabet[i], numberOccurrences[i], var_names[i])
+    for i in range (COMP_VAR):
+        create_plot_bar(alphabet[i], numberOccurrences[i], VAR_NAMES[i])
 
     # Ex6: apply binning to some variables
     for variavel, step in [('Weight', 40), ('Displacement', 5), ('Horsepower', 5)]:
-        idx = var_names.index(variavel)
+        idx = VAR_NAMES.index(variavel)
         matrix_uint16 = binning(matrix_uint16, step, idx)
     
-    alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, var_names)
+    alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, VAR_NAMES)
     for variavel in ['Weight', 'Displacement', 'Horsepower']:
-        idx = var_names.index(variavel)
+        idx = VAR_NAMES.index(variavel)
         create_plot_bar(alphabet[idx], numberOccurrences[idx], variavel)
 
     # Ex7: calculate entrophy
-    p = [None] * len_var
+    p = [None] * LEN_VAR_NAMES
     print("Valor médio (teórico) de bits por símbolo:")
-    for i in range (len_var):
+    for i in range (LEN_VAR_NAMES):
         # Calcular a probabilidade de cada símbolo
         p[i] = numberOccurrences[i] / np.sum(numberOccurrences[i])
 
         entropia = calcularEntropia(p[i])
-        print(f"H{var_names[i][:3]}= {entropia}")
+        print(f"H{VAR_NAMES[i][:3]}= {entropia}")
 
     # Ex8: Huffman coding - número médio de bits por símbolo
     print("\nNúmero médio de bits por símbolo e variância ponderada dos comprimentos:")
-    for i in range(len_var):
+    for i in range(LEN_VAR_NAMES):
         comprimento_medio, variancia = huffman(matrix_uint16[:, i], p[i])
-        print(f"L{var_names[i][:3]}= {comprimento_medio} bits/simbolo, Var= {variancia:}")
+        print(f"L{VAR_NAMES[i][:3]}= {comprimento_medio} bits/simbolo, Var= {variancia:}")
 
 if __name__ == "__main__":
     main()
