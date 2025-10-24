@@ -124,6 +124,11 @@ def main():
     for i in range(len(var_names)):
         comprimento_medio, variancia = huffman(matrix_uint16[:, i], numberOccurrences[i])
         print(f"L{var_names[i][:3]}= {comprimento_medio} bits/simbolo, Var= {variancia:}")
+        
+        
+    # Ex9:
+    
+    #np.corrcoef
 
 if __name__ == "__main__":
     main()
