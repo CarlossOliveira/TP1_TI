@@ -74,54 +74,81 @@ def huffman(data, p):
 
     return comprimento_medio, variancia
 
+# Correlação de Pearson
+def correlacaoPearson(MATRIX, LEN_VAR_NAMES):
+    person_values = [None] * (LEN_VAR_NAMES - 1)
+    
+    for i in range(LEN_VAR_NAMES - 1):
+        person_values[i] = np.corrcoef(MATRIX[:, -1], MATRIX[:, i])[0,1]
+        
+    return person_values
+        
+
 def main():
     # Ex1: ler dados
+    
     DATA = pd.read_excel('./data/CarDataset.xlsx')
     MATRIX = DATA.values # Convert the DataFrame to a matrix, funcao de pandas
     VAR_NAMES = DATA.columns.values.tolist() # Get the column names
     LEN_VAR_NAMES = len(VAR_NAMES)
+    COMP_VAR = LEN_VAR_NAMES - 1
 
     # Ex2: Create scatter plots for MPG vs each of the other variables
+    
     plt.figure(layout="tight", num="Relação entre MPG e as diferentes variáveis (características do carro)", figsize=(10,6))
-    COMP_VAR = LEN_VAR_NAMES - 1
     for i in range(COMP_VAR):
         create_plot(VAR_NAMES[i], VAR_NAMES[COMP_VAR], DATA[VAR_NAMES[i]], DATA[VAR_NAMES[COMP_VAR]], i + 1, COMP_VAR)
     plt.show()
     
     # Ex3: Convert all the data in matrix to uint16
+    
     matrix_uint16 = MATRIX.astype(np.uint16) 
+    
     # Ex4: Calculate occurrences
+    
     alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, LEN_VAR_NAMES)
 
     # Ex5: Plot bars
+    
     for i in range (COMP_VAR):
         create_plot_bar(alphabet[i], numberOccurrences[i], VAR_NAMES[i])
 
     # Ex6: apply binning to some variables
+    
     for variavel, step in [('Weight', 40), ('Displacement', 5), ('Horsepower', 5)]:
         idx = VAR_NAMES.index(variavel)
         matrix_uint16 = binning(matrix_uint16, step, idx)
     
-    alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, VAR_NAMES)
+    alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, LEN_VAR_NAMES)
     for variavel in ['Weight', 'Displacement', 'Horsepower']:
         idx = VAR_NAMES.index(variavel)
         create_plot_bar(alphabet[idx], numberOccurrences[idx], variavel)
 
     # Ex7: calculate entrophy
+    
     p = [None] * LEN_VAR_NAMES
     print("Valor médio (teórico) de bits por símbolo:")
+    
     for i in range (LEN_VAR_NAMES):
         # Calcular a probabilidade de cada símbolo
         p[i] = numberOccurrences[i] / np.sum(numberOccurrences[i])
-
+        
         entropia = calcularEntropia(p[i])
         print(f"H{VAR_NAMES[i][:3]}= {entropia}")
 
     # Ex8: Huffman coding - número médio de bits por símbolo
+    
     print("\nNúmero médio de bits por símbolo e variância ponderada dos comprimentos:")
     for i in range(LEN_VAR_NAMES):
         comprimento_medio, variancia = huffman(matrix_uint16[:, i], p[i])
         print(f"L{VAR_NAMES[i][:3]}= {comprimento_medio} bits/simbolo, Var= {variancia:}")
+
+    # Ex9: Correlação de Pearson
+    
+    pearson_values = correlacaoPearson(MATRIX, LEN_VAR_NAMES)
+    for i in range(COMP_VAR):
+        print(f"Correlação entre MPG e {VAR_NAMES[i]}: {pearson_values[i]:.3f}")
+        
 
 if __name__ == "__main__":
     main()
