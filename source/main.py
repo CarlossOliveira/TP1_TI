@@ -1,7 +1,7 @@
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
-import huffmancodec as huffc 
+import libraries.huffmancodec as huffc 
 
 # Function to create plots
 def create_plot(x, y, x_data, y_data, num_plot, comp):
