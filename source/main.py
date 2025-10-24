@@ -23,11 +23,11 @@ def create_plot_bar(alphabet, numberOccurrences, var_names):
     plt.show()
 
 # Function to calculate number of occurrences
-def extractAlphabetCounts(matrix_uint16, var_names):
-    alphabet = [None] * len(var_names)
-    numberOccurrences = [None] * len(var_names)
+def extractAlphabetCounts(matrix_uint16, len_var):
+    alphabet = [None] * len_var
+    numberOccurrences = [None] * len_var
     
-    for i in range (len(var_names)):
+    for i in range (len_var):
         unique_vals, counts = np.unique(matrix_uint16[:, i], return_counts=True)
         alphabet[i] = unique_vals.astype(np.uint16)
         numberOccurrences[i] = counts.astype(np.uint16)
@@ -79,10 +79,11 @@ def main():
     data = pd.read_excel('./data/CarDataset.xlsx')
     matrix = data.values # Convert the DataFrame to a matrix, funcao de pandas
     var_names = data.columns.values.tolist() # Get the column names
+    len_var = len(var_names)
 
     # Ex2: Create scatter plots for MPG vs each of the other variables
     plt.figure(layout="tight", num="Relação entre MPG e as diferentes variáveis (características do carro)", figsize=(10,6))
-    comp_var = len(var_names) - 1
+    comp_var = len_var - 1
     for i in range(comp_var):
         create_plot(var_names[i], var_names[comp_var], data[var_names[i]], data[var_names[comp_var]], i + 1, comp_var)
     plt.show()
@@ -90,7 +91,7 @@ def main():
     # Ex3: Convert all the data in matrix to uint16
     matrix_uint16 = matrix.astype(np.uint16) 
     # Ex4: Calculate occurrences
-    alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, var_names)
+    alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, len_var)
 
     # Ex5: Plot bars
     for i in range (comp_var):
@@ -107,9 +108,9 @@ def main():
         create_plot_bar(alphabet[idx], numberOccurrences[idx], variavel)
 
     # Ex7: calculate entrophy
-    p = [None] * len(var_names)
+    p = [None] * len_var
     print("Valor médio (teórico) de bits por símbolo:")
-    for i in range (len(var_names)):
+    for i in range (len_var):
         # Calcular a probabilidade de cada símbolo
         p[i] = numberOccurrences[i] / np.sum(numberOccurrences[i])
 
@@ -118,7 +119,7 @@ def main():
 
     # Ex8: Huffman coding - número médio de bits por símbolo
     print("\nNúmero médio de bits por símbolo e variância ponderada dos comprimentos:")
-    for i in range(len(var_names)):
+    for i in range(len_var):
         comprimento_medio, variancia = huffman(matrix_uint16[:, i], p[i])
         print(f"L{var_names[i][:3]}= {comprimento_medio} bits/simbolo, Var= {variancia:}")
 
