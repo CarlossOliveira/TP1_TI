@@ -14,7 +14,7 @@ def create_plot(x, y, x_data, y_data, num_plot, comp):
 
 # Function to plot bars
 def create_plot_bar(alphabet, numberOccurrences, var_names):
-    plt.figure(layout = "tight", num = f"Nuemro de - {var_names}")
+    plt.figure(layout = "tight", num = f"Numero de - {var_names}")
     plt.bar(alphabet.astype('str'), numberOccurrences, color='red', align= "center")
     plt.title('Distribuição ' + var_names)
     plt.xlabel(var_names)
@@ -41,14 +41,12 @@ def binning(matrix, step, indice):
 
     for i in range(0, valorMax + 1, step):
         intervalo = (colunaVar >= i) & (colunaVar < i + step)
-
         if not np.any(intervalo):
             continue
-
+        # Use bincount to find the most frequent value in the interval
         values_in_interval = colunaVar[intervalo]
         if len(values_in_interval) == 0:
             continue
-        
         unique_values, counts = np.unique(values_in_interval, return_counts=True)
         replacement_value = unique_values[np.argmax(counts)]
 
@@ -56,8 +54,8 @@ def binning(matrix, step, indice):
 
     matrix[:, indice] = colunaVar
     return matrix
-
-# Function to calculate entropy
+ 
+# Function to calculate entrophy
 def calcularEntropia(numberOccurrences):
     p = numberOccurrences / np.sum(numberOccurrences)
     H = -np.sum(p * np.log2(p))
@@ -82,7 +80,7 @@ def huffman(data, numberOccurrences):
 
 def main():
     # Ex1: ler dados
-    data = pd.read_excel('./data/CarDataset.xlsx')
+    data = pd.read_excel('/Users/miguel/Desktop/GitHub/TP1_TI/data/CarDataset.xlsx')
     matrix = data.values # Convert the DataFrame to a matrix, funcao de pandas
     var_names = data.columns.values.tolist() # Get the column names
 
@@ -104,40 +102,27 @@ def main():
         create_plot_bar(alphabet[i], numberOccurrences[i], var_names[i])
 
     # Ex6: apply binning to some variables
-    columnsVar = ['Displacement', 'Horsepower', 'Weight']
-    step_sizes = [5, 5, 40]
-    binned_data = matrix_uint16.copy() 
-    var_names_arr = np.array(var_names)
-    updated_counts = {}
+    for variavel, step in [('Weight', 40), ('Displacement', 5), ('Horsepower', 5)]:
+        idx = var_names.index(variavel)
+        matrix_uint16 = binning(matrix_uint16, step, idx)
     
-    for i in range(len(columnsVar)):
-        var = columnsVar[i]
-        step = step_sizes[i]
-        index = np.where(var_names_arr == var)[0][0]
-
-        binned_data = binning(binned_data, step, index)
-
-        # Visualize the distribution after binning
-        unique_vals, counts = np.unique(binned_data[:, index], return_counts=True)
-        updated_counts[var] = counts
-        create_plot_bar(unique_vals, counts, var)
+    alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, var_names)
+    for variavel in ['Weight', 'Displacement', 'Horsepower']:
+        idx = var_names.index(variavel)
+        create_plot_bar(alphabet[idx], numberOccurrences[idx], variavel)
 
     # Ex7: calculate entrophy 
+    print("Valor médio (teórico) de bits por símbolo:")
     for i in range (len(var_names)):
-        var = var_names[i]
-        
-        if var in updated_counts:
-            counts = updated_counts[var]
-        else:
-            counts = numberOccurrences[i]
-
+        counts = numberOccurrences[i]
         entropia = calcularEntropia(counts)
-        print(f"H{var[:3]}= {entropia}")
-        
-    # Ex8: Huffman coding - número médio de bits por símbolo    
+        print(f"H{var_names[i][:3]}= {entropia}")
+
+    # Ex8: Huffman coding - número médio de bits por símbolo
+    print("\nNúmero médio de bits por símbolo e variância ponderada dos comprimentos:")
     for i in range(len(var_names)):
         comprimento_medio, variancia = huffman(matrix_uint16[:, i], numberOccurrences[i])
-        print(f"L{var_names[i][:3]}= {comprimento_medio:.4f} bits/símbolo, Var= {variancia:.4f}")
+        print(f"L{var_names[i][:3]}= {comprimento_medio} bits/simbolo, Var= {variancia:}")
 
 if __name__ == "__main__":
     main()
