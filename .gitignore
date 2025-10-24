@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 __pycache__/
 .vscode/
 .venv/
 env/
 venv/
+=======
+.venv/
+venv/
+__pycache__/
+*.pyc
+>>>>>>> TP1/Miguel

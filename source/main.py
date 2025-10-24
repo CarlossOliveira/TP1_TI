@@ -54,7 +54,7 @@ def binning(matrix, step, indice):
 
     matrix[:, indice] = colunaVar
     return matrix
- 
+
 # Function to calculate entrophy
 def calcularEntropia(numberOccurrences):
     p = numberOccurrences / np.sum(numberOccurrences)
@@ -93,7 +93,6 @@ def main():
     
     # Ex3: Convert all the data in matrix to uint16
     matrix_uint16 = matrix.astype(np.uint16) 
-
     # Ex4: Calculate occurrences
     alphabet, numberOccurrences = extractAlphabetCounts(matrix_uint16, var_names)
 
