@@ -56,20 +56,15 @@ def binning(matrix, step, indice):
     return matrix
 
 # Function to calculate entrophy
-def calcularEntropia(numberOccurrences):
-    p = numberOccurrences / np.sum(numberOccurrences)
+def calcularEntropia(p):
     H = -np.sum(p * np.log2(p))
     return H
 
 # Huffman
-def huffman(data, numberOccurrences):
+def huffman(data, numberOccurrences, p):
     codec = huffc.HuffmanCodec.from_data(data)
     symbols, lengths = codec.get_code_len() # Retorna os símbolos e as lenghts organizadas como no alphabet
 
-    # Criar dicionário para mapear símbolo -> comprimento Huffman    
-    # Calcular probabilidades
-    p = numberOccurrences / np.sum(numberOccurrences)
-    
     # Comprimento médio (L) = soma(p_i * l_i)
     comprimento_medio = np.sum(p * lengths)
     
@@ -110,17 +105,18 @@ def main():
         idx = var_names.index(variavel)
         create_plot_bar(alphabet[idx], numberOccurrences[idx], variavel)
 
-    # Ex7: calculate entrophy 
+    # Ex7: calculate entrophy
+    p = [None] * len(var_names)
     print("Valor médio (teórico) de bits por símbolo:")
     for i in range (len(var_names)):
-        counts = numberOccurrences[i]
-        entropia = calcularEntropia(counts)
+        p[i] = numberOccurrences[i] / np.sum(numberOccurrences)
+        entropia = calcularEntropia(p[i])
         print(f"H{var_names[i][:3]}= {entropia}")
 
     # Ex8: Huffman coding - número médio de bits por símbolo
     print("\nNúmero médio de bits por símbolo e variância ponderada dos comprimentos:")
     for i in range(len(var_names)):
-        comprimento_medio, variancia = huffman(matrix_uint16[:, i], numberOccurrences[i])
+        comprimento_medio, variancia = huffman(matrix_uint16[:, i], numberOccurrences[i], p[i])
         print(f"L{var_names[i][:3]}= {comprimento_medio} bits/simbolo, Var= {variancia:}")
 
 if __name__ == "__main__":
