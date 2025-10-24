@@ -110,7 +110,7 @@ def main():
     print("Valor médio (teórico) de bits por símbolo:")
     for i in range (len(var_names)):
         # Calcular a probabilidade de cada símbolo
-        p[i] = numberOccurrences[i] / np.sum(numberOccurrences)
+        p[i] = numberOccurrences[i] / np.sum(numberOccurrences[i])
 
         entropia = calcularEntropia(p[i])
         print(f"H{var_names[i][:3]}= {entropia}")
