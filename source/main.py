@@ -61,7 +61,7 @@ def calcularEntropia(p):
     return H
 
 # Huffman
-def huffman(data, numberOccurrences, p):
+def huffman(data, p):
     codec = huffc.HuffmanCodec.from_data(data)
     symbols, lengths = codec.get_code_len() # Retorna os símbolos e as lenghts organizadas como no alphabet
 
@@ -109,14 +109,16 @@ def main():
     p = [None] * len(var_names)
     print("Valor médio (teórico) de bits por símbolo:")
     for i in range (len(var_names)):
+        # Calcular a probabilidade de cada símbolo
         p[i] = numberOccurrences[i] / np.sum(numberOccurrences)
+
         entropia = calcularEntropia(p[i])
         print(f"H{var_names[i][:3]}= {entropia}")
 
     # Ex8: Huffman coding - número médio de bits por símbolo
     print("\nNúmero médio de bits por símbolo e variância ponderada dos comprimentos:")
     for i in range(len(var_names)):
-        comprimento_medio, variancia = huffman(matrix_uint16[:, i], numberOccurrences[i], p[i])
+        comprimento_medio, variancia = huffman(matrix_uint16[:, i], p[i])
         print(f"L{var_names[i][:3]}= {comprimento_medio} bits/simbolo, Var= {variancia:}")
 
 if __name__ == "__main__":
