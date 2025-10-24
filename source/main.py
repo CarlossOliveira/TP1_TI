@@ -83,6 +83,27 @@ def correlacaoPearson(MATRIX, LEN_VAR_NAMES):
         
     return person_values
         
+def informacaoMutua(x, y):
+    # I(X;Y) = H(X) + H(Y) - H(X,Y)
+    
+    # Probabilidade de X
+    _, counts_x = np.unique(x, return_counts=True)
+    p_x = counts_x / np.sum(counts_x)
+    
+    # Probabilidade de Y
+    _, counts_y = np.unique(y, return_counts=True)
+    p_y = counts_y / np.sum(counts_y)
+    
+    p_xy = 0 #?
+    
+    Hx = calcularEntropia(p_x)
+    Hy = calcularEntropia(p_y)
+    Hxy = calcularEntropia(p_xy)
+    
+    Ixy = Hx + Hy - Hxy
+    
+    return Ixy
+    
 
 def main():
     # Ex1: ler dados
@@ -149,6 +170,17 @@ def main():
     for i in range(COMP_VAR):
         print(f"Correlação entre MPG e {VAR_NAMES[i]}: {pearson_values[i]:.3f}")
         
-
+    # Ex10: Cálculo da Informação Mútua
+    
+    mi_values = [None] * (LEN_VAR_NAMES - 1)
+    for i in range(COMP_VAR):
+        x = matrix_uint16[:, i]
+        y = matrix_uint16[:, -1]  # MPG
+        mi_values[i] = informacaoMutua(x, y)
+        print(f"MI entre MPG e {VAR_NAMES[i]}: {mi_values[i]:.4f}")
+        
+    
+    
+    
 if __name__ == "__main__":
     main()
