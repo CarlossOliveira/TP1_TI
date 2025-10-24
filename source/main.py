@@ -14,7 +14,7 @@ def create_plot(x, y, x_data, y_data, num_plot, comp):
 
 # Function to plot bars
 def create_plot_bar(alphabet, numberOccurrences, var_names):
-    plt.figure(layout = "tight", num = f"Numero de - {var_names}")
+    plt.figure(layout = "tight", num = f"Numero de {var_names}")
     plt.bar(alphabet.astype('str'), numberOccurrences, color='red', align= "center")
     plt.title('Distribuição ' + var_names)
     plt.xlabel(var_names)
@@ -80,12 +80,12 @@ def huffman(data, numberOccurrences):
 
 def main():
     # Ex1: ler dados
-    data = pd.read_excel('/Users/miguel/Desktop/GitHub/TP1_TI/data/CarDataset.xlsx')
+    data = pd.read_excel('./data/CarDataset.xlsx')
     matrix = data.values # Convert the DataFrame to a matrix, funcao de pandas
     var_names = data.columns.values.tolist() # Get the column names
 
     # Ex2: Create scatter plots for MPG vs each of the other variables
-    plt.figure(layout="tight", num="relação entre MPG e as diferentes variáveis (características do carro)", figsize=(10,6))
+    plt.figure(layout="tight", num="Relação entre MPG e as diferentes variáveis (características do carro)", figsize=(10,6))
     comp_var = len(var_names) - 1
     for i in range(comp_var):
         create_plot(var_names[i], var_names[comp_var], data[var_names[i]], data[var_names[comp_var]], i + 1, comp_var)
