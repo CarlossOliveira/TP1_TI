@@ -38,15 +38,16 @@ def extractAlphabetCounts(matrix_uint16, var_names):
 def binning(matrix, step, indice):
     colunaVar = matrix[:, indice].copy()
     valorMax = int(np.max(colunaVar))
+    valorMin = int(np.min(colunaVar))
 
-    for i in range(0, valorMax + 1, step):
+    for i in range(valorMin, valorMax + 1, step): #nao comeca em 0 mas sim no valor min
         intervalo = (colunaVar >= i) & (colunaVar < i + step)
-        if not np.any(intervalo):
-            continue
-        # Use bincount to find the most frequent value in the interval
+        # Agora o loop so cobre o intrevalo relevante
+        
         values_in_interval = colunaVar[intervalo]
-        if len(values_in_interval) == 0:
+        if len(values_in_interval) == 0: # O argmax exige pelo menos um argumento
             continue
+        
         unique_values, counts = np.unique(values_in_interval, return_counts=True)
         replacement_value = unique_values[np.argmax(counts)]
 
