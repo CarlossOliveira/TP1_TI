@@ -94,8 +94,10 @@ def informacaoMutua(x, y):
     _, counts_y = np.unique(y, return_counts=True)
     p_y = counts_y / np.sum(counts_y)
     
-    p_xy = 0 #?
-    
+    x_y = np.array(list(zip(x, y)))
+    _, counts_xy = np.unique(x_y, axis=0, return_counts=True)
+    p_xy = counts_xy / np.sum(counts_xy)
+
     Hx = calcularEntropia(p_x)
     Hy = calcularEntropia(p_y)
     Hxy = calcularEntropia(p_xy)
@@ -165,13 +167,15 @@ def main():
         print(f"L{VAR_NAMES[i][:3]}= {comprimento_medio} bits/simbolo, Var= {variancia:}")
 
     # Ex9: Correlação de Pearson
-    
+
+    print("\nCoeficiente de correlação:")
     pearson_values = correlacaoPearson(MATRIX, LEN_VAR_NAMES)
     for i in range(COMP_VAR):
         print(f"Correlação entre MPG e {VAR_NAMES[i]}: {pearson_values[i]:.3f}")
         
     # Ex10: Cálculo da Informação Mútua
-    
+
+    print("\nInformação mútua:")
     mi_values = [None] * (LEN_VAR_NAMES - 1)
     for i in range(COMP_VAR):
         x = matrix_uint16[:, i]
