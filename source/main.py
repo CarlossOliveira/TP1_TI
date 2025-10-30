@@ -189,7 +189,7 @@ def main():
     # Ex10: Cálculo da Informação Mútua
 
     print("\nInformação mútua:")
-    mi_values = [None] * (LEN_VAR_NAMES - 1)
+    mi_values = [None] * (COMP_VAR)
     for i in range(COMP_VAR):
         x = matrix_uint16[:, i]
         y = matrix_uint16[:, -1]  # MPG
