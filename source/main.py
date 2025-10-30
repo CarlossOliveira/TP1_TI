@@ -20,7 +20,7 @@ def create_plot_bar(alphabet, numberOccurrences, VAR_NAMES):
     plt.xlabel(VAR_NAMES)
     plt.ylabel("Count")
     plt.xticks(rotation = 90)
-    plt.show()
+    #plt.show()
 
 # Function to calculate number of occurrences
 def extractAlphabetCounts(matrix_uint16, LEN_VAR_NAMES):
@@ -77,12 +77,12 @@ def huffman(data, p):
 # Correlação de Pearson
 def correlacaoPearson(MATRIX, LEN_VAR_NAMES):
     person_values = [None] * (LEN_VAR_NAMES - 1)
-    
-    for i in range(LEN_VAR_NAMES - 1):
-        person_values[i] = np.corrcoef(MATRIX[:, -1], MATRIX[:, i])[0,1]
-        
+
+    person_values = np.corrcoef(MATRIX[:, -1], MATRIX[:, :], rowvar=False)[0,1:] # Calcular a correlação entre a última coluna (MPG) e todas as outras colunas, começando a partir da segunda coluna de forma a não incluir a correlação do MPG consigo mesmo.
+
     return person_values
-        
+
+# Informação Mútua
 def informacaoMutua(x, y):
     # I(X;Y) = H(X) + H(Y) - H(X,Y)
     
@@ -105,7 +105,20 @@ def informacaoMutua(x, y):
     Ixy = Hx + Hy - Hxy
     
     return Ixy
-    
+
+# Estimar MPG
+def MPGpred(matrix, var_names, aceleracao_value, weight_value):
+    MPG_estim = (-5.5241
+                - 0.146 * aceleracao_value
+                - 0.4909 * matrix[:, var_names.index('Cylinders')]
+                + 0.0026 * matrix[:, var_names.index('Displacement')] 
+                - 0.0045 * matrix[:, var_names.index('Horsepower')]
+                + 0.6725 * matrix[:, var_names.index('ModelYear')] 
+                - 0.0059 * weight_value)
+    MAE = np.mean(np.abs(MPG_estim - (matrix[:, var_names.index('MPG')])))
+    RMSE = np.sqrt(np.mean((MPG_estim - (matrix[:, var_names.index('MPG')])) ** 2))
+
+    return MPG_estim, MAE, RMSE
 
 def main():
     # Ex1: ler dados
@@ -121,7 +134,7 @@ def main():
     plt.figure(layout="tight", num="Relação entre MPG e as diferentes variáveis (características do carro)", figsize=(10,6))
     for i in range(COMP_VAR):
         create_plot(VAR_NAMES[i], VAR_NAMES[COMP_VAR], DATA[VAR_NAMES[i]], DATA[VAR_NAMES[COMP_VAR]], i + 1, COMP_VAR)
-    plt.show()
+    #plt.show()
     
     # Ex3: Convert all the data in matrix to uint16
     
@@ -183,8 +196,27 @@ def main():
         mi_values[i] = informacaoMutua(x, y)
         print(f"MI entre MPG e {VAR_NAMES[i]}: {mi_values[i]:.4f}")
         
+    #Ex11: Modelo de regressão linear para estimar MPG
+
+    # Aplicar o modelo de regressão linear no conjunto de dados completo
+    MPG_pred, mae, rmse = MPGpred(matrix_uint16, VAR_NAMES, matrix_uint16[:, VAR_NAMES.index('Acceleration')], matrix_uint16[:, VAR_NAMES.index('Weight')])
+    print("\nMétricas de avaliação do modelo:")
+    print(f"MAE: {mae}")
+    print(f"RMSE: {rmse}")
     
-    
-    
+    # Avaliar o modelo usando a média de aceleração
+    media_accel = np.mean(matrix_uint16[:, VAR_NAMES.index("Acceleration")])
+    MPG_pred_acc, mae_acc, rmse_acc = MPGpred(matrix_uint16, VAR_NAMES, media_accel, matrix_uint16[:, VAR_NAMES.index('Weight')])
+    print("\nSubstituindo Acc pelo seu valor médio:")
+    print(f"MAE = {mae_acc}")
+    print(f"RMSE = {rmse_acc}")
+
+    # Avaliar o modelo usando a média de peso
+    media_weight = np.mean(matrix_uint16[:, VAR_NAMES.index("Weight")])
+    MPG_pred_wght, mae_wght, rmse_wght = MPGpred(matrix_uint16, VAR_NAMES, matrix_uint16[:, VAR_NAMES.index('Acceleration')], media_weight)
+    print("\nSubstituindo Weight pelo seu valor médio:")
+    print(f"MAE = {mae_wght}")
+    print(f"RMSE = {rmse_wght}")
+
 if __name__ == "__main__":
     main()
