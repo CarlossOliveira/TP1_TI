@@ -20,7 +20,7 @@ def create_plot_bar(alphabet, numberOccurrences, VAR_NAMES):
     plt.xlabel(VAR_NAMES)
     plt.ylabel("Count")
     plt.xticks(rotation = 90)
-    #plt.show()
+    plt.show()
 
 # Function to calculate number of occurrences
 def extractAlphabetCounts(matrix_uint16, LEN_VAR_NAMES):
@@ -115,8 +115,8 @@ def MPGpred(matrix, var_names, aceleracao_value, weight_value):
                 - 0.0045 * matrix[:, var_names.index('Horsepower')]
                 + 0.6725 * matrix[:, var_names.index('ModelYear')] 
                 - 0.0059 * weight_value)
-    MAE = np.mean(np.abs(MPG_estim - (matrix[:, var_names.index('MPG')])))
-    RMSE = np.sqrt(np.mean((MPG_estim - (matrix[:, var_names.index('MPG')])) ** 2))
+    MAE = np.mean(np.abs(MPG_estim - (matrix[:, var_names.index('MPG')]))) # Mean Absolute Error
+    RMSE = np.sqrt(np.mean((MPG_estim - (matrix[:, var_names.index('MPG')])) ** 2)) # Root Mean Square Error
 
     return MPG_estim, MAE, RMSE
 
@@ -134,7 +134,7 @@ def main():
     plt.figure(layout="tight", num="Relação entre MPG e as diferentes variáveis (características do carro)", figsize=(10,6))
     for i in range(COMP_VAR):
         create_plot(VAR_NAMES[i], VAR_NAMES[COMP_VAR], DATA[VAR_NAMES[i]], DATA[VAR_NAMES[COMP_VAR]], i + 1, COMP_VAR)
-    #plt.show()
+    plt.show()
     
     # Ex3: Convert all the data in matrix to uint16
     
@@ -201,8 +201,8 @@ def main():
     # Aplicar o modelo de regressão linear no conjunto de dados completo
     MPG_pred, mae, rmse = MPGpred(matrix_uint16, VAR_NAMES, matrix_uint16[:, VAR_NAMES.index('Acceleration')], matrix_uint16[:, VAR_NAMES.index('Weight')])
     print("\nMétricas de avaliação do modelo:")
-    print(f"MAE: {mae}")
-    print(f"RMSE: {rmse}")
+    print(f"MAE = {mae}")
+    print(f"RMSE = {rmse}")
     
     # Avaliar o modelo usando a média de aceleração
     media_accel = np.mean(matrix_uint16[:, VAR_NAMES.index("Acceleration")])
