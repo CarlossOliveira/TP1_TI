@@ -93,16 +93,13 @@ def informacaoMutua(x, y):
     # Probabilidade de Y
     _, counts_y = np.unique(y, return_counts=True)
     p_y = counts_y / np.sum(counts_y)
-    
-    x_y = np.array(list(zip(x, y)))
-    _, counts_xy = np.unique(x_y, axis=0, return_counts=True)
-    p_xy = counts_xy / np.sum(counts_xy)
 
-    Hx = calcularEntropia(p_x)
-    Hy = calcularEntropia(p_y)
-    Hxy = calcularEntropia(p_xy)
+    # Probabilidade conjunta de (X, Y)
+    xy = np.array(list(zip(x,y)))
+    _, counts_xy = np.unique(xy, axis=0, return_counts=True)
+    p_xy = counts_xy / np.sum(counts_xy)
     
-    Ixy = Hx + Hy - Hxy
+    Ixy = calcularEntropia(p_x) + calcularEntropia(p_y) - calcularEntropia(p_xy)
     
     return Ixy
 
