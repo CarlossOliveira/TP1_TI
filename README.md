@@ -2,9 +2,9 @@
 
 ##### Trabalho realizado por:
 
-- Bernardo Machado (2024223574)
-- Carlos Oliveira (2024202355)
-- Miguel Gaspar (2024208558)
+- Bernardo Machado (Número de Estudante: 2024223574)
+- Carlos Oliveira (Número de Estudante: 2024202355)
+- Miguel Gaspar (Número de Estudante: 2024208558)
 
 ## Índice
 
@@ -20,7 +20,7 @@
 
 ### 2.b)
 
-Através da análise dos gráficos, podemos ver como o MPG (milhas por galão) se relaciona com diferentes características dos veículos. Primeiro, há uma relação positiva entre MPG e o Ano do Modelo. Isso indica que carros mais novos tendem a ser mais eficientes. Também é evidente a relação negativa entre MPG e peso, potência, cilindrada e número de cilindros indicando que veículos mais pesados com motores maiores e mais potentes geralmente têm menor eficiência de combustível, consumindo mais combustível por milha. De entre todos os fatores, o peso tem o efeito mais negativo sobre o MPG. Para a variável Aceleração, a relação com o MPG é ligeiramente positiva, sugerindo que o impacto direto da aceleração é menor no que toca à eficiência de combustível em comparação com os todos os outros fatores.
+Através da análise dos gráficos, podemos observar como o MPG (milhas por galão) se relaciona com diferentes características dos veículos. Primeiro, há uma relação positiva entre MPG e o Ano do Modelo indicando que carros mais novos tendem a ser mais eficientes. De seguida é evidente a relação negativa entre MPG e, peso, potência, cilindrada e número de cilindros indicando que veículos mais pesados e/ou com motores maiores e/ou mais potentes geralmente têm menor eficiência de combustível, consumindo mais combustível por milha. De entre todos os fatores, o peso tem o efeito mais negativo sobre o MPG. Para a variável Aceleração, a relação com o MPG é ligeiramente positiva, sugerindo que o impacto direto na eficiência de combustível da aceleração é menor em comparação com os todos os outros fatores.
 
 ### 7.c)
 
@@ -40,3 +40,5 @@ Em resumo, a correlação de Pearson só capta dependências lineares, enquanto 
 ### 11.f)
 
 ![Gráfico Comparação MPG Real Vs. MPG Previsto](./guide/MPG%20Real%20Vs.%20MPG%20Previsto.pdf)
+
+<img src="/guide/MPG%20Real%20Vs.%20MPG%20Previsto.pdf" alt="Gráficos MPG" width="600">
