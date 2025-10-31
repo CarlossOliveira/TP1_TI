@@ -41,4 +41,4 @@ Em resumo, a correlação de Pearson só capta dependências lineares, enquanto 
 
 ![Gráfico Comparação MPG Real Vs. MPG Previsto](./guide/MPG%20Real%20Vs.%20MPG%20Previsto.pdf)
 
-<img src="/guide/MPG%20Real%20Vs.%20MPG%20Previsto.pdf" alt="Gráficos MPG" width="600">
+<img src="./guide/MPG%20Real%20Vs.%20MPG%20Previsto.pdf" alt="Gráficos MPG" width="600">
