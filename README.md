@@ -25,16 +25,11 @@ Através da análise dos gráficos, podemos observar como o MPG (milhas por gal�
 
 ### 7.c)
 
-A variável “Weight” é a que apresenta o maior valor de entropia (aproximadamente 6.06) indicando uma grande variabilidade nos valores. Isto acontece devido ao peso dos veículos variar bastante entre modelos compactos e pesados. 
-
+A variável “Weight” é a que apresenta o maior valor de entropia (aproximadamente 6.06) indicando uma grande variabilidade nos valores. Isto acontece devido ao peso dos veículos variar bastante entre modelos compactos e pesados.
 As variáveis “Displacement” e “Horsepower” (aproximadamente 4.84 e 4.54) também apresentam elevada entropia elevada refletindo-se na dispersão significativa dos dados. Estes valores indicam que o volume e a potência do motor variam bastante consoante o automóvel.
-
 A variável “MPG” (aproximadamente 4.86) tem entropia alta, ou seja, há uma grande diversidade de eficiência energética. O valor da sua entropia semelhante à de “Displacement” e “Horsepower” mostra que o consumo está fortemente relacionado com essas variáveis.
-
-As variáveis “Acceleration” e “ModelYear” apesar de menores, ainda são significativas, e refletem a variação dos anos de fabrico dos veículos e dos valores de aceleração. 
-
+As variáveis “Acceleration” e “ModelYear” apesar de menores, ainda são significativas, e refletem a variação dos anos de fabrico dos veículos e dos valores de aceleração.
 "Cylinders" é a variável com o menor valor de entropia assumindo poucos valores discretos (4, 6, 8). A baixa entropia está diretamente relacionada com a baixa incerteza e, assim, é mais previsível saber o número de cilindros de um carro. Apresenta aproximadamente o valor de 1.59.
-
 
 ### 8.c)
 
@@ -50,11 +45,9 @@ Em resumo, a correlação de Pearson só capta dependências lineares, enquanto 
 
 ### 11.b)
 
-
-
 ### 11.f)
 
-Tendo em conta todas as variáveis, obteve-se um MAE de 2.57, o que indica uma boa aproximação aos valores reais do consumo. 
+Tendo em conta todas as variáveis, obteve-se um MAE de 2.57, o que indica uma boa aproximação aos valores reais do consumo.
 
 Ao substituir “Acceleration”, variável que apresentou menor valor de Informação Mútua, pelo seu valor médio, os erros não aumentam significativamente, o que demonstra que esta variável tem pouca influência nas previsões de MPG.
 
