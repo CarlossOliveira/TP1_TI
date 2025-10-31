@@ -1,6 +1,6 @@
 # Relatório TP1 - Análise de Dados de Veículos
 
-##### Trabalho realizado por:
+### Trabalho realizado por:
 
 - Bernardo Machado (Número de Estudante: 2024223574)
 - Carlos Oliveira (Número de Estudante: 2024202355)
@@ -39,6 +39,6 @@ Em resumo, a correlação de Pearson só capta dependências lineares, enquanto 
 
 ### 11.f)
 
-![Gráfico Comparação MPG Real Vs. MPG Previsto](./guide/MPG%20Real%20Vs.%20MPG%20Previsto.pdf)
+![Gráfico Comparação MPG Real Vs. MPG Previsto](./guide/MPG%20Real%20Vs.%20MPG%20Previsto.jpg)
 
-<img src="./guide/MPG%20Real%20Vs.%20MPG%20Previsto.pdf" alt="Gráficos MPG" width="600">
+<img src="./guide/MPG%20Real%20Vs.%20MPG%20Previsto.jpg" alt="Gráficos MPG" width="600">
