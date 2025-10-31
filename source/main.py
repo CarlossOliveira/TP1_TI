@@ -83,24 +83,16 @@ def correlacaoPearson(MATRIX, LEN_VAR_NAMES):
     return pearson_values
 
 # Informação Mútua
-def informacaoMutua(x, y):
+def informacaoMutua(x, y, entropia_x, entropia_y):
     # I(X;Y) = H(X) + H(Y) - H(X,Y)
-    
-    # Probabilidade de X
-    _, counts_x = np.unique(x, return_counts=True)
-    p_x = counts_x / np.sum(counts_x)
-    
-    # Probabilidade de Y
-    _, counts_y = np.unique(y, return_counts=True)
-    p_y = counts_y / np.sum(counts_y)
 
     # Probabilidade conjunta de (X, Y)
     xy = np.array(list(zip(x,y)))
     _, counts_xy = np.unique(xy, axis=0, return_counts=True)
     p_xy = counts_xy / np.sum(counts_xy)
-    
-    Ixy = calcularEntropia(p_x) + calcularEntropia(p_y) - calcularEntropia(p_xy)
-    
+
+    Ixy = entropia_x + entropia_y - calcularEntropia(p_xy)
+
     return Ixy
 
 # Estimar MPG
@@ -160,14 +152,15 @@ def main():
     # Ex7: calculate entrophy
     
     p = [None] * LEN_VAR_NAMES
+    entropia = [None] * LEN_VAR_NAMES
     print("Valor médio (teórico) de bits por símbolo:")
     
     for i in range (LEN_VAR_NAMES):
         # Calcular a probabilidade de cada símbolo
         p[i] = numberOccurrences[i] / np.sum(numberOccurrences[i])
         
-        entropia = calcularEntropia(p[i])
-        print(f"H{VAR_NAMES[i][:3]}= {entropia}")
+        entropia[i] = calcularEntropia(p[i])
+        print(f"H{VAR_NAMES[i][:3]}= {entropia[i]:.5f}")
 
     # Ex8: Huffman coding - número médio de bits por símbolo
     
@@ -189,8 +182,8 @@ def main():
     mi_values = [None] * (COMP_VAR)
     for i in range(COMP_VAR):
         x = matrix_uint16[:, i]
-        y = matrix_uint16[:, -1]  # MPG
-        mi_values[i] = informacaoMutua(x, y)
+        y = matrix_uint16[:, VAR_NAMES.index('MPG')]
+        mi_values[i] = informacaoMutua(x, y, entropia[i], entropia[VAR_NAMES.index('MPG')])
         print(f"MI entre MPG e {VAR_NAMES[i]}: {mi_values[i]:.4f}")
         
     #Ex11: Modelo de regressão linear para estimar MPG
