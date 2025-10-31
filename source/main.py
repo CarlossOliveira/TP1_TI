@@ -208,6 +208,15 @@ def main():
     print("\nSubstituindo Weight pelo seu valor médio:")
     print(f"MAE = {mae_wght}")
     print(f"RMSE = {rmse_wght}")
+    
+    # Criar gráfico comparativo entre os valores reais e os valores previstos de MPG
+    plt.figure(layout="tight", num="Comparação entre valores reais e previstos de MPG", figsize=(10,6))
+    plt.plot(MATRIX[:, VAR_NAMES.index('MPG')], label='MPG Real', color='blue')
+    plt.plot(MPG_pred, label='MPG Previsto', color='red', linestyle='--')
+    plt.xlabel('Índices')
+    plt.ylabel('MPG')
+    plt.legend()
+    plt.show()
 
 if __name__ == "__main__":
     main()
