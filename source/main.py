@@ -209,7 +209,7 @@ def main():
     print(f"MAE = {mae_wght}")
     print(f"RMSE = {rmse_wght}")
     
-    # Criar gráfico comparativo entre os valores reais e os valores previstos de MPG
+    # Criar gráfico comparativo entre os valores reais e os valores previstos de MPG para o conjunto de dados completo de forma a melhor visualizar a precisão do modelo
     plt.figure(layout="tight", num="Comparação entre valores reais e previstos de MPG", figsize=(10,6))
     plt.plot(MATRIX[:, VAR_NAMES.index('MPG')], label='MPG Real', color='blue')
     plt.plot(MPG_pred, label='MPG Previsto', color='red', linestyle='--')
