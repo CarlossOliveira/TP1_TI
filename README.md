@@ -15,7 +15,7 @@
   - [8.c) Como e porquê reduzir a variância dos comprimentos dos códigos](#8c)
   - [10.b) Análise do Modelo de Regressão Linear](#10b)
   - [11.b) INSERT](#11b)
-  - [11.f) INSERT](#11f)
+  - [11.f) Estimativa de MPG e comparação dos resultados](#11f)
 
 ## Resoluções
 
@@ -24,6 +24,17 @@
 Através da análise dos gráficos, podemos observar como o MPG (milhas por galão) se relaciona com diferentes características dos veículos. Primeiro, há uma relação positiva entre MPG e o Ano do Modelo, indicando que carros mais novos tendem a ser mais eficientes. De seguida, é evidente a relação negativa entre MPG e peso, potência, cilindrada e número de cilindros, indicando que veículos mais pesados e/ou com motores maiores e/ou mais potentes geralmente têm menor eficiência de combustível, consumindo mais combustível por milha. De entre todos os fatores, o peso tem o efeito mais negativo sobre o MPG. Para a variável Aceleração, a relação com o MPG é ligeiramente positiva, sugerindo que o impacto direto na eficiência de combustível da aceleração é menor em comparação com todos os outros fatores.
 
 ### 7.c)
+
+A variável “Weight” é a que apresenta o maior valor de entropia (aproximadamente 6.06) indicando uma grande variabilidade nos valores. Isto acontece devido ao peso dos veículos variar bastante entre modelos compactos e pesados. 
+
+As variáveis “Displacement” e “Horsepower” (aproximadamente 4.84 e 4.54) também apresentam elevada entropia elevada refletindo-se na dispersão significativa dos dados. Estes valores indicam que o volume e a potência do motor variam bastante consoante o automóvel.
+
+A variável “MPG” (aproximadamente 4.86) tem entropia alta, ou seja, há uma grande diversidade de eficiência energética. O valor da sua entropia semelhante à de “Displacement” e “Horsepower” mostra que o consumo está fortemente relacionado com essas variáveis.
+
+As variáveis “Acceleration” e “ModelYear” apesar de menores, ainda são significativas, e refletem a variação dos anos de fabrico dos veículos e dos valores de aceleração. 
+
+"Cylinders" é a variável com o menor valor de entropia assumindo poucos valores discretos (4, 6, 8). A baixa entropia está diretamente relacionada com a baixa incerteza e, assim, é mais previsível saber o número de cilindros de um carro. Apresenta aproximadamente o valor de 1.59.
+
 
 ### 8.c)
 
@@ -39,6 +50,16 @@ Em resumo, a correlação de Pearson só capta dependências lineares, enquanto 
 
 ### 11.b)
 
+
+
 ### 11.f)
+
+Tendo em conta todas as variáveis, obteve-se um MAE de 2.57, o que indica uma boa aproximação aos valores reais do consumo. 
+
+Ao substituir “Acceleration”, variável que apresentou menor valor de Informação Mútua, pelo seu valor médio, os erros não aumentam significativamente, o que demonstra que esta variável tem pouca influência nas previsões de MPG.
+
+Por outro lado, ao substituir “Weight” (a variável com maior MI) pelo seu valor médio, os erros aumentaram de forma significativa, resultando num MAE de 5.22 e num RMSE de 6.25. Isto mostra que o “Weight” é determinante para prever com precisão o MPG.
+
+Assim, as variáveis com valores mais informativos são cruciais na precisão do modelo, enquanto que variáveis com valores menos informativos têm fraca influência na previsão do modelo.
 
 ![Gráfico Comparação MPG Real Vs. MPG Previsto](./guide/MPG%20Real%20Vs.%20MPG%20Previsto.jpg)
