@@ -13,7 +13,7 @@
   - [2.b) Análise dos gráficos de relação entre MPG e outras variáveis](#2b)
   - [7.c) Análise dos valores da entropia](#7c)
   - [8.c) Como e porquê reduzir a variância dos comprimentos dos códigos](#8c)
-  - [10.b) Análise do Modelo de Regressão Linear](#10b)
+  - [10.b) Análise do modelo de regressão linear](#10b)
   - [11.b) INSERT](#11b)
   - [11.f) Estimativa de MPG e comparação dos resultados](#11f)
 
