@@ -104,6 +104,7 @@ def MPGpred(matrix, var_names, aceleracao_value, weight_value):
                 - 0.0045 * matrix[:, var_names.index('Horsepower')]
                 + 0.6725 * matrix[:, var_names.index('ModelYear')] 
                 - 0.0059 * weight_value)
+
     MAE = np.mean(np.abs(MPG_estim - (matrix[:, var_names.index('MPG')]))) # Mean Absolute Error
     RMSE = np.sqrt(np.mean((MPG_estim - (matrix[:, var_names.index('MPG')])) ** 2)) # Root Mean Square Error
 
