@@ -8,7 +8,7 @@
 
 ## Índice
 
-- [Capa](#relatório-tp1---análise-de-dados-de-veículos)
+- [Índice](#relatório-tp1---análise-de-dados-de-veículos)
 - [Resoluções](#resoluções)
   - [2.b) Análise dos gráficos de relação entre MPG e outras variáveis](#2b)
   - [7.c) Análise dos valores da entropia](#7c)
