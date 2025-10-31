@@ -76,11 +76,11 @@ def huffman(data, p):
 
 # Correlação de Pearson
 def correlacaoPearson(MATRIX, LEN_VAR_NAMES):
-    person_values = [None] * (LEN_VAR_NAMES - 1)
+    pearson_values = [None] * (LEN_VAR_NAMES - 1)
 
-    person_values = np.corrcoef(MATRIX[:, -1], MATRIX[:, :], rowvar=False)[0,1:] # Calcular a correlação entre a última coluna (MPG) e todas as outras colunas, começando a partir da segunda coluna de forma a não incluir a correlação do MPG consigo mesmo.
+    pearson_values = np.corrcoef(MATRIX[:, -1], MATRIX[:, :], rowvar=False)[0,1:] # Calcular a correlação entre a última coluna (MPG) e todas as outras colunas, começando a partir da segunda coluna de forma a não incluir a correlação do MPG consigo mesmo.
 
-    return person_values
+    return pearson_values
 
 # Informação Mútua
 def informacaoMutua(x, y):
