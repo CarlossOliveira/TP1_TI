@@ -14,7 +14,7 @@
   - [7.c) Análise dos valores da entropia](#7c)
   - [8.c) Como e porquê reduzir a variância dos comprimentos dos códigos](#8c)
   - [10.b) Análise do modelo de regressão linear](#10b)
-  - [11.b) INSERT](#11b)
+  - [11.b) Comparação entre o resultado e os valores verdadeiros de MPG] (#11b)
   - [11.f) Estimativa de MPG e comparação dos resultados](#11f)
 
 ## Resoluções
@@ -44,6 +44,9 @@ A variável Cylinders apresenta alta correlação mas informação mútua relati
 Em resumo, a correlação de Pearson só capta dependências lineares, enquanto a informação mútua consegue identificar qualquer tipo de relação (linear ou não linear), proporcionando uma análise mais completa das variáveis que afetam o consumo de combustível.
 
 ### 11.b)
+
+Visualmente, a linha de previsão segue a tendência geral dos valores reais, indicando que o modelo conseguiu capturar o padrão fundamental dos dados. No entanto, é possivel reparar na incapacidade de prever com precisão os valores extremos, especialmente os picos de alta eficiência (MPG elevado). Observa-se sistematicamente que, quando o MPG real atinge valores máximos, o modelo tende a subestimá-los, prevendo valores consistentemente mais baixos.
+Esta observação visual é confirmada quantitativamente pelas métricas de erro. O Erro Médio Absoluto (MAE) de 2.57 indica que, em média, as previsões do modelo desviam-se do valor real por essa magnitude. Contudo, a Raiz do Erro Quadrático Médio (RMSE) é de 3.47. O facto de o RMSE ser visivelmente superior ao MAE é significativo, pois o RMSE penaliza erros de grande magnitude de forma mais severa. Isto confirma que, embora o erro "típico" seja baixo (como reflete o MAE), a presença de alguns erros grandes (especificamente a falha em prever os picos) está a aumentar o valor geral do RMSE. Em suma, o modelo é eficaz para estimar a tendência central do MPG, mas não é fiável para prever com precisão os casos de consumo extremo.
 
 ### 11.f)
 
